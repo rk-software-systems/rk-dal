@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RKSoftware.DAL.Core", "RKSoftware.DAL.Core\RKSoftware.DAL.Core.csproj", "{68F6679F-1F42-4B34-AF5C-57CC2EA51C85}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RKSoftware.DAL.InMemory", "RKSoftware.DAL.InMemory\RKSoftware.DAL.InMemory.csproj", "{59B68FCC-91A9-44E4-A0FF-9745BC496178}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6FB74538-C951-4C63-A4B6-61EF85B4FD99}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RKSoftware.DAL.InMemory.Tests", "Tests\RKSoftware.DAL.InMemory.Tests\RKSoftware.DAL.InMemory.Tests.csproj", "{417BFFB0-CDFB-4897-AA2C-BC64903DFB69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RKSoftware.DAL.EntityFramework", "RKSoftware.DAL.EntityFramework\RKSoftware.DAL.EntityFramework.csproj", "{67C3A957-6B07-40A6-A5FA-33E5BD907133}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{37134513-81A1-409D-BC0C-5C0BC7E4F5FE}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68F6679F-1F42-4B34-AF5C-57CC2EA51C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68F6679F-1F42-4B34-AF5C-57CC2EA51C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68F6679F-1F42-4B34-AF5C-57CC2EA51C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68F6679F-1F42-4B34-AF5C-57CC2EA51C85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59B68FCC-91A9-44E4-A0FF-9745BC496178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B68FCC-91A9-44E4-A0FF-9745BC496178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59B68FCC-91A9-44E4-A0FF-9745BC496178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59B68FCC-91A9-44E4-A0FF-9745BC496178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{417BFFB0-CDFB-4897-AA2C-BC64903DFB69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{417BFFB0-CDFB-4897-AA2C-BC64903DFB69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{417BFFB0-CDFB-4897-AA2C-BC64903DFB69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{417BFFB0-CDFB-4897-AA2C-BC64903DFB69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67C3A957-6B07-40A6-A5FA-33E5BD907133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67C3A957-6B07-40A6-A5FA-33E5BD907133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67C3A957-6B07-40A6-A5FA-33E5BD907133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67C3A957-6B07-40A6-A5FA-33E5BD907133}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{417BFFB0-CDFB-4897-AA2C-BC64903DFB69} = {6FB74538-C951-4C63-A4B6-61EF85B4FD99}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FAF2B127-B18B-4CB7-95D5-7B52C81BA235}
+	EndGlobalSection
+EndGlobal
