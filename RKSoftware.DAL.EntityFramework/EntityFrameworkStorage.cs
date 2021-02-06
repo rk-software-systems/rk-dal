@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RKSoftware.DAL.EntityFramework
 {
+    /// <summary>
+    /// <see cref="ITransactionalStorage"/> implelmentation using in Entity Framework
+    /// </summary>
     public class EntityFrameworkStorage : EntityFrameworkReadonlyStorage, ITransactionalStorage
     {
         private readonly DbContext _dbContext;
@@ -22,7 +25,9 @@ namespace RKSoftware.DAL.EntityFramework
             _activeTransaction = false;
         }
 
-
+        /// <summary>
+        /// <see cref="IStorage.Add{T}(T)"/>
+        /// </summary>
         public T Add<T>(T entity) where T : class
         {
             if (entity == null)
@@ -51,11 +56,17 @@ namespace RKSoftware.DAL.EntityFramework
             return entry.Entity;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.AddAsync{T}(T)"/>
+        /// </summary>
         public async Task<T> AddAsync<T>(T entity) where T : class
         {
             return await AddAsync(entity, CancellationToken.None);
         }
 
+        /// <summary>
+        /// <see cref="IStorage.AddAsync{T}(T, CancellationToken)"/>
+        /// </summary>
         public async Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
             if (entity == null)
@@ -90,11 +101,17 @@ namespace RKSoftware.DAL.EntityFramework
             return entry.Entity;
         }
 
+        /// <summary>
+        /// <see cref="ITransactionalStorage.BeginTransaction"/>
+        /// </summary>
         public void BeginTransaction()
         {
             _activeTransaction = true;
         }
 
+        /// <summary>
+        /// <see cref="ITransactionalStorage.CommitTrnsaction"/>
+        /// </summary>
         public void CommitTrnsaction()
         {
             _commitSemaphore.Wait();
@@ -109,6 +126,9 @@ namespace RKSoftware.DAL.EntityFramework
             }
         }
 
+        /// <summary>
+        /// <see cref="IStorage.Remove{T}(T)"/>
+        /// </summary>
         public bool Remove<T>(T entity) where T : class
         {
             if (entity == null)
@@ -137,11 +157,17 @@ namespace RKSoftware.DAL.EntityFramework
             return true;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.RemoveAsync{T}(T)"/>
+        /// </summary>
         public async Task<bool> RemoveAsync<T>(T entity) where T : class
         {
             return await RemoveAsync(entity, CancellationToken.None);
         }
 
+        /// <summary>
+        /// <see cref="IStorage.RemoveAsync{T}(T, CancellationToken)"/>
+        /// </summary>
         public async Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
             if (entity == null)
@@ -175,6 +201,9 @@ namespace RKSoftware.DAL.EntityFramework
             return true;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.Save{T}(T)"/>
+        /// </summary>
         public T Save<T>(T entity) where T : class
         {
             if (entity == null)
@@ -204,11 +233,17 @@ namespace RKSoftware.DAL.EntityFramework
             return entry.Entity;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.SaveAsync{T}(T)"/>
+        /// </summary>
         public async Task<T> SaveAsync<T>(T entity) where T : class
         {
             return await SaveAsync(entity, CancellationToken.None);
         }
 
+        /// <summary>
+        /// <see cref="IStorage.SaveAsync{T}(T, CancellationToken)"/>
+        /// </summary>
         public async Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
             if (entity == null)

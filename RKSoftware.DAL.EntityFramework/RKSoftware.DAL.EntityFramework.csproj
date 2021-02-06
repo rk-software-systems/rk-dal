@@ -4,6 +4,18 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <Authors>Koryakov Konstantin</Authors>
+    <Company>RK Software Systems</Company>
+    <Product>Data Access Layer implementation using Entity Framework core</Product>
+    <Description>This Packages i and implementation of RKSoftware.DAL.Core contracts using Entity Framework core</Description>
+    <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>dal, entity framework, RKSoftware</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>company-logo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,10 +24,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="RKSoftware.DAL.Core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RKSoftware.DAL.Core\RKSoftware.DAL.Core.csproj" />
+    <None Include="..\company-logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

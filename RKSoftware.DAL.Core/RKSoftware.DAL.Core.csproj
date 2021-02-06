@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -13,9 +13,13 @@
     <Product>Data Access layer core contracts</Product>
     <Description>This package  contains core contracts that can be used to implement Data Access Layer for .NET projects</Description>
     <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
-    <RepositoryType>github</RepositoryType>
+    <RepositoryType>git</RepositoryType>
     <PackageTags>DAL, RKSoftware</PackageTags>
     <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
+    <PackageIcon>company-logo.png</PackageIcon>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.1.1</FileVersion>
   </PropertyGroup>
   
   <ItemGroup>
@@ -23,6 +27,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\company-logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

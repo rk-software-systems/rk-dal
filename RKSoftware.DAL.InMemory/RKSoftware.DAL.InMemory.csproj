@@ -4,6 +4,17 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>Konstantin Koryakov</Authors>
+    <Company>RK Software Systems</Company>
+    <Product>In Memory storage Data Access layer</Product>
+    <Description>This package contains RKSoftware.DAL.Core implementation using in memory ICollection based storage</Description>
+    <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
+    <PackageIcon>company-logo.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>RKSoftware, DAL, in-memory</PackageTags>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,10 +23,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.8" />
+    <PackageReference Include="RKSoftware.DAL.Core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RKSoftware.DAL.Core\RKSoftware.DAL.Core.csproj" />
+    <None Include="..\company-logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

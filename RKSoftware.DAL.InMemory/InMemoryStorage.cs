@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RKSoftware.DAL.InMemory
 {
+    /// <summary>
+    /// <see cref="IStorage"/> in memory implementaion
+    /// </summary>
     public class InMemoryStorage : IStorage
     {
         private readonly CollectionStorage _storage;
@@ -18,6 +21,9 @@ namespace RKSoftware.DAL.InMemory
             _storage = collectionStorage;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.Add{T}(T)"/>
+        /// </summary>
         public T Add<T>(T entity) where T : class
         {
             if (entity == null)
@@ -30,16 +36,25 @@ namespace RKSoftware.DAL.InMemory
             return entity;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.AddAsync{T}(T)"/>
+        /// </summary>
         public async Task<T> AddAsync<T>(T entity) where T : class
         {
             return await Task.FromResult(Add(entity));
         }
 
+        /// <summary>
+        /// <see cref="IStorage.AddAsync{T}(T, CancellationToken)"/>
+        /// </summary>
         public async Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
             return await Task.FromResult(Add(entity));
         }
 
+        /// <summary>
+        /// <see cref="IStorage.Remove{T}(T)"/>
+        /// </summary>
         public bool Remove<T>(T entity) where T : class
         {
             if (entity == null)
@@ -50,37 +65,58 @@ namespace RKSoftware.DAL.InMemory
             return _storage.GetCollection<T>().Remove(entity);
         }
 
+        /// <summary>
+        /// <see cref="IStorage.RemoveAsync{T}(T)"/>
+        /// </summary>
         public async Task<bool> RemoveAsync<T>(T entity) where T : class
         {
             return await Task.FromResult(Remove(entity));
         }
 
+        /// <summary>
+        /// <see cref="IStorage.RemoveAsync{T}(T, CancellationToken)"/>
+        /// </summary>
         public async Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
             return await Task.FromResult(Remove(entity));
         }
 
+        /// <summary>
+        /// <see cref="IStorage.Save{T}(T)"/>
+        /// </summary>
         public T Save<T>(T entity) where T : class
         {
             return entity;
         }
 
+        /// <summary>
+        /// <see cref="IStorage.SaveAsync{T}(T)"/>
+        /// </summary>
         public Task<T> SaveAsync<T>(T entity) where T : class
         {
             return Task.FromResult(Save(entity));
         }
 
+        /// <summary>
+        /// <see cref="IStorage.SaveAsync{T}(T, CancellationToken)"/>
+        /// </summary>
         public Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
             return Task.FromResult(Save(entity));
         }
 
+        /// <summary>
+        /// <see cref="IReadonlyStorage.Set{T}"/>
+        /// </summary>
         public IQueryable<T> Set<T>() where T : class
         {
             return _storage.GetCollection<T>()
                 .AsQueryable();
         }
 
+        /// <summary>
+        /// <see cref="IDisposable"/>
+        /// </summary>
         public void Dispose()
         {
             GC.SuppressFinalize(this);

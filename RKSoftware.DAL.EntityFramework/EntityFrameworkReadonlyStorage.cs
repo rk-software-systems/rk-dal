@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace RKSoftware.DAL.EntityFramework
 {
+    /// <summary>
+    /// <see cref="IReadonlyStorage"/> Entity Framework implementation
+    /// </summary>
     public class EntityFrameworkReadonlyStorage : IReadonlyStorage
     {
         private readonly DbContext _dbContext;
@@ -18,6 +21,9 @@ namespace RKSoftware.DAL.EntityFramework
             _dbContext = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        /// <summary>
+        /// <see cref="IDisposable.Dispose"/>
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -39,6 +45,9 @@ namespace RKSoftware.DAL.EntityFramework
             _disposed = true;
         }
 
+        /// <summary>
+        /// <see cref="IReadonlyStorage.Set{T}"/>
+        /// </summary>
         public IQueryable<T> Set<T>() where T : class
         {
             return _dbContext.Set<T>().AsNoTracking();

@@ -3,9 +3,11 @@ using RKSoftware.DAL.Contract;
 
 namespace RKSoftware.DAL.EntityFramework.RegistrationExtentions
 {
+    /// <summary>
+    /// This class contains Extension methods that can be ysed to Register RK Software Entity Framework DAL services
+    /// </summary>
     public static class DependencyRegistration
     {
-
         /// <summary>
         /// Add <see cref="IReadonlyStorage"/> Entity Framework RK Storage implementations
         /// </summary>

@@ -4,8 +4,14 @@ using System.Linq;
 
 namespace RKSoftware.DAL.InMemory
 {
+    /// <summary>
+    /// In memory realization of <see cref="IReadonlyStorage"/>
+    /// </summary>
     public class InMemoryReadonlyStorage : IReadonlyStorage
     {
+        /// <summary>
+        /// In memory storage
+        /// </summary>
         protected readonly CollectionStorage _storage;
 
         /// <summary>
@@ -17,11 +23,17 @@ namespace RKSoftware.DAL.InMemory
             _storage = collectionStorage;
         }
 
+        /// <summary>
+        /// <see cref="IDisposable"/> implelmentation
+        /// </summary>
         public void Dispose()
         {
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// <see cref="IReadonlyStorage.Set{T}"/>
+        /// </summary>
         public IQueryable<T> Set<T>() where T : class
         {
             return _storage.GetCollection<T>()
