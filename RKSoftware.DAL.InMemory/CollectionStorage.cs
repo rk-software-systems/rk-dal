@@ -6,7 +6,7 @@ namespace RKSoftware.DAL.InMemory
 {
     public class CollectionStorage
     {
-        private ConcurrentDictionary<string, ICollection> _entitySets;
+        private readonly ConcurrentDictionary<string, ICollection> _entitySets;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionStorage"/> class.

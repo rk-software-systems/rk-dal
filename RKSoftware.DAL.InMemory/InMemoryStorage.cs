@@ -80,5 +80,10 @@ namespace RKSoftware.DAL.InMemory
             return _storage.GetCollection<T>()
                 .AsQueryable();
         }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
     }
 }

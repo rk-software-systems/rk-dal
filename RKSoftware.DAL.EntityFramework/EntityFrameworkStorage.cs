@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RKSoftware.DAL.Contract;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +10,7 @@ namespace RKSoftware.DAL.EntityFramework
     {
         private readonly DbContext _dbContext;
         private bool _activeTransaction;
-        private static SemaphoreSlim _commitSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim _commitSemaphore = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityFrameworkStorage"/> class.
@@ -21,12 +18,7 @@ namespace RKSoftware.DAL.EntityFramework
         public EntityFrameworkStorage(DbContext context)
             : base(context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            _dbContext = context;
+            _dbContext = context ?? throw new ArgumentNullException(nameof(context));
             _activeTransaction = false;
         }
 
@@ -61,30 +53,7 @@ namespace RKSoftware.DAL.EntityFramework
 
         public async Task<T> AddAsync<T>(T entity) where T : class
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            var entry = _dbContext.Set<T>().Add(entity);
-
-            if (!_activeTransaction)
-            {
-                _commitSemaphore.Wait();
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        await _dbContext.SaveChangesAsync();
-                    }
-                }
-                finally
-                {
-                    _commitSemaphore.Release();
-                }
-            }
-
-            return entry.Entity;
+            return await AddAsync(entity, CancellationToken.None);
         }
 
         public async Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken) where T : class
@@ -98,7 +67,7 @@ namespace RKSoftware.DAL.EntityFramework
 
             if (!_activeTransaction)
             {
-                _commitSemaphore.Wait();
+                await _commitSemaphore.WaitAsync(cancellationToken);
                 try
                 {
                     if (!_activeTransaction)
@@ -109,7 +78,7 @@ namespace RKSoftware.DAL.EntityFramework
                             return entity;
                         }
 
-                        await _dbContext.SaveChangesAsync();
+                        await _dbContext.SaveChangesAsync(cancellationToken);
                     }
                 }
                 finally
@@ -168,29 +137,111 @@ namespace RKSoftware.DAL.EntityFramework
             return true;
         }
 
-        public Task<bool> RemoveAsync<T>(T entity) where T : class
+        public async Task<bool> RemoveAsync<T>(T entity) where T : class
         {
-            throw new NotImplementedException();
+            return await RemoveAsync(entity, CancellationToken.None);
         }
 
-        public Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
+        public async Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            var entry = _dbContext.Remove(entity);
+            if (!_activeTransaction)
+            {
+                await _commitSemaphore.WaitAsync(cancellationToken);
+                try
+                {
+                    if (!_activeTransaction)
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            entry.State = EntityState.Detached;
+                            return false;
+                        }
+
+                        await _dbContext.SaveChangesAsync(cancellationToken);
+                    }
+                }
+                finally
+                {
+                    _commitSemaphore.Release();
+                }
+            }
+
+            return true;
         }
 
         public T Save<T>(T entity) where T : class
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            var entry = _dbContext.Set<T>().Attach(entity);
+
+            if (!_activeTransaction)
+            {
+                _commitSemaphore.Wait();
+                try
+                {
+                    if (!_activeTransaction)
+                    {
+                        entry.State = EntityState.Modified;
+                        _dbContext.SaveChanges();
+                    }
+                }
+                finally
+                {
+                    _commitSemaphore.Release();
+                }
+            }
+
+            return entry.Entity;
         }
 
-        public Task<T> SaveAsync<T>(T entity) where T : class
+        public async Task<T> SaveAsync<T>(T entity) where T : class
         {
-            throw new NotImplementedException();
+            return await SaveAsync(entity, CancellationToken.None);
         }
 
-        public Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
+        public async Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            var entry = _dbContext.Set<T>().Attach(entity);
+
+            if (!_activeTransaction)
+            {
+                await _commitSemaphore.WaitAsync(cancellationToken);
+                try
+                {
+                    if (!_activeTransaction)
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            entry.State = EntityState.Detached;
+                            return entity;
+                        }
+
+                        entry.State = EntityState.Modified;
+                        await _dbContext.SaveChangesAsync(cancellationToken);
+                    }
+                }
+                finally
+                {
+                    _commitSemaphore.Release();
+                }
+            }
+
+            return entry.Entity;
         }
     }
 }

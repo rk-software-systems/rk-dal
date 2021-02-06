@@ -1,4 +1,5 @@
 ﻿using RKSoftware.DAL.Contract;
+using System;
 using System.Linq;
 
 namespace RKSoftware.DAL.InMemory
@@ -14,6 +15,11 @@ namespace RKSoftware.DAL.InMemory
         public InMemoryReadonlyStorage(CollectionStorage collectionStorage)
         {
             _storage = collectionStorage;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
 
         public IQueryable<T> Set<T>() where T : class
