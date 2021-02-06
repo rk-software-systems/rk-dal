@@ -1,0 +1,35 @@
+name: NuGet Generation
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Update or Create NuGet package
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+      - name: Install dependencies RKSoftware.DAL.Core
+        run: dotnet restore RKSoftware.DAL.Core
+
+      - name: Build DAL Core package
+        run: dotnet build RKSoftware.DAL.Core --configuration Release --no-restore
+
+      - name: Push generated DAL Core to NuGet repository
+        run: dotnet nuget push ./RKSoftware.DAL.Core/bin/Release/*.nupkg --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+      - name: Push generated System.Text.Json Converter package to NuGet repository
+        run: dotnet nuget push ./RKSoftware.Packages.Caching.System.Text.Json.Converter/bin/Release/*.nupkg --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+      - name: Push generated Newtonsoft Converter package to NuGet repository
+        run: dotnet nuget push ./RKSoftware.Packages.Caching.Newtonsoft.Json.Converter/bin/Release/*.nupkg --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json

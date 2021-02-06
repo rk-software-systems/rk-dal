@@ -16,6 +16,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{37134513-81A1-409D-BC0C-5C0BC7E4F5FE}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
+		.github\workflows\dotnet-package-publish.yml = .github\workflows\dotnet-package-publish.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
