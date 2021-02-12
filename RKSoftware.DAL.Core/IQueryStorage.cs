@@ -18,7 +18,7 @@ namespace RKSoftware.DAL.Contract
         /// <param name="queryBuilder">Delegate that is used to build Storage query</param>
         /// <param name="resultExecutor">Delegate that is used to convert Storage query to result</param>
         /// <returns>Query result</returns>
-        TResult QueryAsync<TResult, TQueriable>(Func<IReadonlyStorage, IQueryable<TQueriable>> queryBuilder,
+        TResult Query<TResult, TQueriable>(Func<IReadonlyStorage, IQueryable<TQueriable>> queryBuilder,
             Func<IQueryable<TQueriable>, TResult> resultExecutor);
 
         /// <summary>
