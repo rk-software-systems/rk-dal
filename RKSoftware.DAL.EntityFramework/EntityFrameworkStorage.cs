@@ -30,37 +30,6 @@ namespace RKSoftware.DAL.EntityFramework
         }
 
         /// <summary>
-        /// <see cref="IStorage.Add{T}(T)"/>
-        /// </summary>
-        public T Add<T>(T entity) where T : class
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            var entry = _dbContext.Set<T>().Add(entity);
-
-            if (!_activeTransaction)
-            {
-                _commitSemaphore.Wait();
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        _dbContext.SaveChanges();
-                    }
-                }
-                finally
-                {
-                    _commitSemaphore.Release();
-                }
-            }
-
-            return entry.Entity;
-        }
-
-        /// <summary>
         /// <see cref="IStorage.AddAsync{T}(T)"/>
         /// </summary>
         public async Task<T> AddAsync<T>(T entity) where T : class
@@ -114,54 +83,6 @@ namespace RKSoftware.DAL.EntityFramework
         }
 
         /// <summary>
-        /// <see cref="ITransactionalStorage.CommitTrnsaction"/>
-        /// </summary>
-        public void CommitTrnsaction()
-        {
-            _commitSemaphore.Wait();
-            try
-            {
-                _activeTransaction = false;
-                _dbContext.SaveChanges();
-            }
-            finally
-            {
-                _commitSemaphore.Release();
-            }
-        }
-
-        /// <summary>
-        /// <see cref="IStorage.Remove{T}(T)"/>
-        /// </summary>
-        public bool Remove<T>(T entity) where T : class
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            _dbContext.Remove(entity);
-            if (!_activeTransaction)
-            {
-                _commitSemaphore.Wait();
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        _dbContext.SaveChanges();
-                    }
-                }
-                finally
-                {
-                    _commitSemaphore.Release();
-                }
-
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// <see cref="IStorage.RemoveAsync{T}(T)"/>
         /// </summary>
         public async Task<bool> RemoveAsync<T>(T entity) where T : class
@@ -179,7 +100,9 @@ namespace RKSoftware.DAL.EntityFramework
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            var entry = _dbContext.Remove(entity);
+            var entry = await AttachEntity(entity);
+            entry.State = EntityState.Deleted;
+
             if (!_activeTransaction)
             {
                 await _commitSemaphore.WaitAsync(cancellationToken);
@@ -206,39 +129,6 @@ namespace RKSoftware.DAL.EntityFramework
         }
 
         /// <summary>
-        /// <see cref="IStorage.Save{T}(T)"/>
-        /// </summary>
-        public T Save<T>(T entity) where T : class
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            var entry = _dbContext.Set<T>().Attach(entity);
-
-            if (!_activeTransaction)
-            {
-                _commitSemaphore.Wait();
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        entry.State = EntityState.Modified;
-                        _dbContext.SaveChanges();
-                    }
-                }
-                finally
-                {
-                    _commitSemaphore.Release();
-                    entry.State = EntityState.Detached;
-                }
-            }
-
-            return entry.Entity;
-        }
-
-        /// <summary>
         /// <see cref="IStorage.SaveAsync{T}(T)"/>
         /// </summary>
         public async Task<T> SaveAsync<T>(T entity) where T : class
@@ -256,7 +146,8 @@ namespace RKSoftware.DAL.EntityFramework
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            var entry = _dbContext.Set<T>().Update(entity);// await AttachEntity(entity);
+            var entry = await AttachEntity(entity);
+            entry.State = EntityState.Modified;
 
             if (!_activeTransaction)
             {
@@ -271,7 +162,6 @@ namespace RKSoftware.DAL.EntityFramework
                             return entity;
                         }
 
-                        entry.State = EntityState.Modified;
                         await _dbContext.SaveChangesAsync(cancellationToken);
                     }
                 }
@@ -283,6 +173,23 @@ namespace RKSoftware.DAL.EntityFramework
             }
 
             return entry.Entity;
+        }
+
+        /// <summary>
+        /// <see cref="ITransactionalStorage.CommitTrnsactionAsync"/>
+        /// </summary>
+        public async Task CommitTrnsactionAsync()
+        {
+            await _commitSemaphore.WaitAsync();
+            try
+            {
+                _activeTransaction = false;
+                await _dbContext.SaveChangesAsync();
+            }
+            finally
+            {
+                _commitSemaphore.Release();
+            }
         }
 
         private async Task<EntityEntry<T>> AttachEntity<T>(T entity)

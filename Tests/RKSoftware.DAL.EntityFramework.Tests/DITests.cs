@@ -14,7 +14,7 @@ namespace RKSoftware.DAL.EntityFramework.Tests
     {
         private static IServiceProvider CreateServiceProvider()
         {
-            var services = DBContextInitializer.RegisterDBContext();
+            var services = DBContextInitializer.RegisterDBContext(nameof(DITests));
             services.AddRKEFStorages();
 
             return services.BuildServiceProvider();

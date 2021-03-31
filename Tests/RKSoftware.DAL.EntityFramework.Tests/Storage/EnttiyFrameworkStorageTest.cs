@@ -13,9 +13,9 @@ namespace RKSoftware.DAL.EntityFramework.Tests.Storage
     [TestClass]
     public class EnttiyFrameworkStorageTest
     {
-        private static IServiceScope GetScope()
+        private static IServiceScope GetScope(string dbName)
         {
-            var services = DBContextInitializer.RegisterDBContext();
+            var services = DBContextInitializer.RegisterDBContext(dbName);
             services.AddRKEFStorages();
             return services.BuildServiceProvider().CreateScope();
         }
@@ -23,7 +23,7 @@ namespace RKSoftware.DAL.EntityFramework.Tests.Storage
         [TestMethod]
         public async Task TestAdd()
         {
-            using var scope = GetScope();
+            using var scope = GetScope(nameof(TestAdd));
             var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
             var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
             var entity = new TestEntity
@@ -41,7 +41,7 @@ namespace RKSoftware.DAL.EntityFramework.Tests.Storage
         [TestMethod]
         public async Task TestDoubleAdd()
         {
-            using var scope = GetScope();
+            using var scope = GetScope(nameof(TestDoubleAdd));
             var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
             var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
             var entity = new TestEntity
@@ -60,7 +60,7 @@ namespace RKSoftware.DAL.EntityFramework.Tests.Storage
         [TestMethod]
         public async Task TestUpdate()
         {
-            using var scope = GetScope();
+            using var scope = GetScope(nameof(TestUpdate));
             var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
             var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
 
@@ -90,9 +90,9 @@ namespace RKSoftware.DAL.EntityFramework.Tests.Storage
         }
 
         [TestMethod]
-        public async Task TestDoubleUpdate()
+        public async Task TestUpdateNonExistent()
         {
-            using var scope = GetScope();
+            using var scope = GetScope(nameof(TestUpdateNonExistent));
             var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
             var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
 
@@ -103,18 +103,52 @@ namespace RKSoftware.DAL.EntityFramework.Tests.Storage
                 TestLongProperty = 10
             };
 
-            entity.TestDateProperty = DateTime.UtcNow;
-
-            var newContextEntity = new TestEntity()
-            {
-                TestLongProperty = entity.TestLongProperty,
-                TestDateProperty = DateTime.UtcNow,
-                TestStringProperty = "some updated string"
-            };
-
             await Assert.ThrowsExceptionAsync<DbUpdateConcurrencyException>(async () =>
             {
-                await storage.SaveAsync(newContextEntity);
+                await storage.SaveAsync(entity);
+            });
+        }
+
+        [TestMethod]
+        public async Task TestRemove()
+        {
+            using var scope = GetScope(nameof(TestUpdate));
+            var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
+
+            var entity = new TestEntity
+            {
+                TestStringProperty = "some string",
+                TestDateProperty = DateTime.UtcNow,
+                TestLongProperty = 10
+            };
+
+            dbContext.Set<TestEntity>().Add(entity);
+            await dbContext.SaveChangesAsync();
+
+            var entityToRemove = new TestEntity
+            {
+                TestLongProperty = entity.TestLongProperty
+            };
+            await storage.RemoveAsync(entityToRemove);
+
+            Assert.IsNull(dbContext.Set<TestEntity>().Find(entity.TestLongProperty));
+        }
+
+        [TestMethod]
+        public async Task TestRemoveNonExisting()
+        {
+            using var scope = GetScope(nameof(TestUpdate));
+            var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
+
+            var entityToRemove = new TestEntity
+            {
+                TestLongProperty = 10
+            };
+            await Assert.ThrowsExceptionAsync<DbUpdateConcurrencyException>(async () =>
+            {
+                await storage.RemoveAsync(entityToRemove);
             });
         }
     }

@@ -9,7 +9,7 @@ namespace RKSoftware.DAL.InMemory.Tests
     [TestClass]
     public class StorageTests
     {
-        private Tuple<CollectionStorage, InMemoryStorage> CreateStorage()
+        private static Tuple<CollectionStorage, InMemoryStorage> CreateStorage()
         {
             var collectionStorage = new CollectionStorage();
             var storage = new InMemoryStorage(collectionStorage);
@@ -18,7 +18,7 @@ namespace RKSoftware.DAL.InMemory.Tests
         }
 
         [TestMethod]
-        public void TestAddMethod()
+        public async Task TestAddMethod()
         {
             var storages = CreateStorage();
             var entity = new TestEntity()
@@ -27,7 +27,7 @@ namespace RKSoftware.DAL.InMemory.Tests
                 TestStringProperty = "test string"
             };
 
-            storages.Item2.Add(entity);
+            await storages.Item2.AddAsync(entity);
 
             Assert.AreEqual(1, storages.Item1.GetCollection<TestEntity>().Count);
         }
@@ -48,7 +48,7 @@ namespace RKSoftware.DAL.InMemory.Tests
         }
 
         [TestMethod]
-        public void TestRemove()
+        public async Task TestRemove()
         {
             var storages = CreateStorage();
             storages.Item1.GetCollection<TestEntity>().Add(new TestEntity()
@@ -64,7 +64,7 @@ namespace RKSoftware.DAL.InMemory.Tests
                 .FirstOrDefault(x => x.TestLongProperty == 2);
             Assert.IsNotNull(entityToBeDeleted);
 
-            Assert.IsTrue(storages.Item2.Remove(entityToBeDeleted));
+            Assert.IsTrue(await storages.Item2.RemoveAsync(entityToBeDeleted));
             Assert.AreEqual(1, storages.Item1.GetCollection<TestEntity>().Count);
             var remainigEntity = storages.Item2.Set<TestEntity>().FirstOrDefault();
             Assert.IsNotNull(remainigEntity);

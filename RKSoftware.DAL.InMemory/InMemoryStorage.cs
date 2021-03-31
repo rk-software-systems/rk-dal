@@ -21,10 +21,7 @@ namespace RKSoftware.DAL.InMemory
             _storage = collectionStorage;
         }
 
-        /// <summary>
-        /// <see cref="IStorage.Add{T}(T)"/>
-        /// </summary>
-        public T Add<T>(T entity) where T : class
+        private T Add<T>(T entity) where T : class
         {
             if (entity == null)
             {
@@ -52,10 +49,7 @@ namespace RKSoftware.DAL.InMemory
             return await Task.FromResult(Add(entity));
         }
 
-        /// <summary>
-        /// <see cref="IStorage.Remove{T}(T)"/>
-        /// </summary>
-        public bool Remove<T>(T entity) where T : class
+        private bool Remove<T>(T entity) where T : class
         {
             if (entity == null)
             {
@@ -81,10 +75,7 @@ namespace RKSoftware.DAL.InMemory
             return await Task.FromResult(Remove(entity));
         }
 
-        /// <summary>
-        /// <see cref="IStorage.Save{T}(T)"/>
-        /// </summary>
-        public T Save<T>(T entity) where T : class
+        private T Save<T>(T entity) where T : class
         {
             return entity;
         }

@@ -16,7 +16,7 @@
     <PackageTags>dal, entity framework, RKSoftware</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>company-logo.png</PackageIcon>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +25,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
-    <PackageReference Include="RKSoftware.DAL.Core" Version="1.0.2" />
+    <PackageReference Include="RKSoftware.DAL.Core" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
