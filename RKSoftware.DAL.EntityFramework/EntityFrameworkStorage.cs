@@ -1,8 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RKSoftware.DAL.Contract;
+using RKSoftware.DAL.EntityFramework.EFExtensions;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+//using System.Linq;
 
 namespace RKSoftware.DAL.EntityFramework
 {
@@ -13,7 +17,7 @@ namespace RKSoftware.DAL.EntityFramework
     {
         private readonly DbContext _dbContext;
         private bool _activeTransaction;
-        private static readonly SemaphoreSlim _commitSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim _commitSemaphore = new(1, 1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityFrameworkStorage"/> class.
@@ -227,6 +231,7 @@ namespace RKSoftware.DAL.EntityFramework
                 finally
                 {
                     _commitSemaphore.Release();
+                    entry.State = EntityState.Detached;
                 }
             }
 
@@ -251,7 +256,7 @@ namespace RKSoftware.DAL.EntityFramework
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            var entry = _dbContext.Set<T>().Attach(entity);
+            var entry = _dbContext.Set<T>().Update(entity);// await AttachEntity(entity);
 
             if (!_activeTransaction)
             {
@@ -272,11 +277,34 @@ namespace RKSoftware.DAL.EntityFramework
                 }
                 finally
                 {
+                    entry.State = EntityState.Detached;
                     _commitSemaphore.Release();
                 }
             }
 
             return entry.Entity;
+        }
+
+        private async Task<EntityEntry<T>> AttachEntity<T>(T entity)
+            where T : class
+        {
+            try
+            {
+                return _dbContext.Set<T>().Attach(entity);
+            }
+            catch (InvalidOperationException)
+            {
+                var keyValues = _dbContext.FindPrimaryKeyValues(entity);
+                if (keyValues == null)
+                {
+                    return _dbContext.Set<T>().Attach(entity);
+                }
+
+                var dbEntity = await _dbContext.FindAsync<T>(keyValues.ToArray());
+                _dbContext.Entry(dbEntity).State = EntityState.Detached;
+
+                return _dbContext.Set<T>().Attach(entity);
+            }
         }
     }
 }

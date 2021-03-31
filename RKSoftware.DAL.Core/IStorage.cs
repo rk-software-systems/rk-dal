@@ -9,14 +9,6 @@ namespace RKSoftware.DAL.Contract
     public interface IStorage : IReadonlyStorage
     {
         /// <summary>
-        /// Add existing entity in storage
-        /// </summary>
-        /// <typeparam name="T">Type of the entity to be saved</typeparam>
-        /// <param name="entity">Entity to be added</param>
-        /// <returns>Entity after save operation</returns>
-        T Add<T>(T entity) where T : class;
-
-        /// <summary>
         /// Add existing entity in storage async
         /// </summary>
         /// <typeparam name="T">Type of the entity to be added</typeparam>
@@ -34,14 +26,6 @@ namespace RKSoftware.DAL.Contract
         Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken) where T : class;
 
         /// <summary>
-        /// Save existing entity in storage
-        /// </summary>
-        /// <typeparam name="T">Type of the entity to be saved</typeparam>
-        /// <param name="entity">Entity to be saved</param>
-        /// <returns>Entity after save operation</returns>
-        T Save<T>(T entity) where T : class;
-
-        /// <summary>
         /// Save existing entity in storage async
         /// </summary>
         /// <typeparam name="T">Type of the entity to be saved</typeparam>
@@ -57,13 +41,6 @@ namespace RKSoftware.DAL.Contract
         /// <param name="cancellationToken">Operation cancellation token</param>
         /// <returns>Entity after save operation</returns>
         Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class;
-
-        /// <summary>
-        /// Remove entity from storage
-        /// </summary>
-        /// <typeparam name="T">Type of the entity to be removed</typeparam>
-        /// <param name="entity">Entity to be removed</param>
-        bool Remove<T>(T entity) where T : class;
 
         /// <summary>
         /// Remove entity from storage async
