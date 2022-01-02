@@ -12,6 +12,11 @@ namespace RKSoftware.DAL.EntityFramework.Domain
 
         public bool CompareTo(TestEntity other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
             return TestStringProperty == other.TestStringProperty
                 && TestLongProperty == other.TestLongProperty
                 && TestDateProperty == other.TestDateProperty;

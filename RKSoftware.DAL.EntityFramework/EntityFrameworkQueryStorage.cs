@@ -27,6 +27,16 @@ namespace RKSoftware.DAL.EntityFramework
         /// </summary>
         public TResult Query<TResult, TQueriable>(Func<IReadonlyStorage, IQueryable<TQueriable>> queryBuilder, Func<IQueryable<TQueriable>, TResult> resultExecutor)
         {
+            if (resultExecutor == null)
+            {
+                throw new ArgumentNullException(nameof(resultExecutor));
+            }
+
+            if (queryBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(queryBuilder));
+            }
+
             using var scope = _serviceProvider.CreateScope();
             using var storage = scope.ServiceProvider.GetRequiredService<IReadonlyStorage>();
             return resultExecutor(queryBuilder(storage));
@@ -37,6 +47,16 @@ namespace RKSoftware.DAL.EntityFramework
         /// </summary>
         public async Task<TResult> QueryAsync<TResult, TQueriable>(Func<IReadonlyStorage, Task<IQueryable<TQueriable>>> queryBuilder, Func<IQueryable<TQueriable>, TResult> resultExecutor)
         {
+            if (resultExecutor == null)
+            {
+                throw new ArgumentNullException(nameof(resultExecutor));
+            }
+
+            if (queryBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(queryBuilder));
+            }
+
             using var scope = _serviceProvider.CreateScope();
             using var storage = scope.ServiceProvider.GetRequiredService<IReadonlyStorage>();
             return resultExecutor(await queryBuilder(storage));
@@ -47,6 +67,16 @@ namespace RKSoftware.DAL.EntityFramework
         /// </summary>
         public async Task<TResult> QueryAsync<TResult, TQueriable>(Func<IReadonlyStorage, Task<IQueryable<TQueriable>>> queryBuilder, Func<IQueryable<TQueriable>, Task<TResult>> resultExecutor)
         {
+            if (resultExecutor == null)
+            {
+                throw new ArgumentNullException(nameof(resultExecutor));
+            }
+
+            if (queryBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(queryBuilder));
+            }
+
             using var scope = _serviceProvider.CreateScope();
             using var storage = scope.ServiceProvider.GetRequiredService<IReadonlyStorage>();
             return await resultExecutor(await queryBuilder(storage));
@@ -57,6 +87,16 @@ namespace RKSoftware.DAL.EntityFramework
         /// </summary>
         public async Task<TResult> QueryAsync<TResult, TQueriable>(Func<IReadonlyStorage, IQueryable<TQueriable>> queryBuilder, Func<IQueryable<TQueriable>, Task<TResult>> resultExecutor)
         {
+            if (resultExecutor == null)
+            {
+                throw new ArgumentNullException(nameof(resultExecutor));
+            }
+
+            if (queryBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(queryBuilder));
+            }
+
             using var scope = _serviceProvider.CreateScope();
             using var storage = scope.ServiceProvider.GetRequiredService<IReadonlyStorage>();
             return await resultExecutor(queryBuilder(storage));
