@@ -176,9 +176,9 @@ namespace RKSoftware.DAL.EntityFramework
         }
 
         /// <summary>
-        /// <see cref="ITransactionalStorage.CommitTrnsactionAsync"/>
+        /// <see cref="ITransactionalStorage.CommitTransactionAsync"/>
         /// </summary>
-        public async Task CommitTrnsactionAsync()
+        public async Task CommitTransactionAsync()
         {
             await _commitSemaphore.WaitAsync();
             try
