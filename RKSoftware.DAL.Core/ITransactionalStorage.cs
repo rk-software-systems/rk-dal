@@ -15,7 +15,7 @@ namespace RKSoftware.DAL.Contract
         /// <summary>
         /// Persist all accumulated operations to storage.
         /// </summary>
-        Task CommitTrnsactionAsync();
+        Task CommitTransactionAsync();
 
         /// <summary>
         /// Reset all uncommited changes in context.
