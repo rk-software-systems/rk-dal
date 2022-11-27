@@ -11,7 +11,7 @@ namespace RKSoftware.DAL.InMemory.Tests
         public void TestInMemoryCollectionIsImmutable()
         {
             var storage = new CollectionStorage();
-            var readonlyStorage = new InMemoryReadonlyStorage(storage);
+            using var readonlyStorage = new InMemoryReadonlyStorage(storage);
             var collection = readonlyStorage.Set<TestEntity>();
             var list = collection.ToList();
             list.Add(new TestEntity());
@@ -32,7 +32,7 @@ namespace RKSoftware.DAL.InMemory.Tests
 
             storage.GetCollection<TestEntity>().Add(testEntity);
 
-            var readonlyStorage = new InMemoryReadonlyStorage(storage);
+            using var readonlyStorage = new InMemoryReadonlyStorage(storage);
             var collection = readonlyStorage.Set<TestEntity>();
 
             Assert.AreEqual(1, collection.Count());

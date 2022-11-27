@@ -9,7 +9,7 @@ namespace RKSoftware.DAL.InMemory.Tests
     [TestClass]
     public class DITests
     {
-        private IServiceProvider CreateServiceProvider()
+        private static IServiceProvider CreateServiceProvider()
         {
             var services = new ServiceCollection();
 

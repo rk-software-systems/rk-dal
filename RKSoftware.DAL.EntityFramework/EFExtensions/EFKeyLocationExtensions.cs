@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,6 +20,11 @@ namespace RKSoftware.DAL.EntityFramework.EFExtensions
         /// <returns></returns>
         public static IEnumerable<object> FindPrimaryKeyValues<T>(this DbContext dbContext, T entity)
         {
+            if (dbContext == null)
+            {
+                throw new ArgumentNullException(nameof(dbContext));
+            }
+
             return from p in dbContext.FindPrimaryKeyProperties<T>()
                    select entity.GetPropertyValue(p.Name);
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace RKSoftware.DAL.EntityFramework.Domain
@@ -7,6 +8,11 @@ namespace RKSoftware.DAL.EntityFramework.Domain
     {
         public void Configure(EntityTypeBuilder<TestEntity> builder)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             builder.HasKey(x => x.TestLongProperty);
 
             builder.Property(x => x.TestStringProperty)

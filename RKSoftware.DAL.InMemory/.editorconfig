@@ -16,6 +16,7 @@ indent_size = 2
 indent_size = 2
 
 # JSON files
+
 [*.json]
 indent_size = 2
 

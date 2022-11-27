@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace RKSoftware.DAL.EntityFramework.Domain
 {
@@ -7,9 +8,14 @@ namespace RKSoftware.DAL.EntityFramework.Domain
         public SampleDBContext(DbContextOptions<SampleDBContext> options)
         : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.ApplyConfiguration(new TestEntityMap());
+            if (modelBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(modelBuilder));
+            }
+
+            modelBuilder.ApplyConfiguration(new TestEntityMap());
         }
     }
 }

@@ -15,6 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RKSoftware.DAL.EntityFramew
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{37134513-81A1-409D-BC0C-5C0BC7E4F5FE}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 		company-logo.png = company-logo.png
@@ -22,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RKSoftware.DAL.EntityFramework.Tests", "Tests\RKSoftware.DAL.EntityFramework.Tests\RKSoftware.DAL.EntityFramework.Tests.csproj", "{9403B8D8-9FAB-4C16-A399-0B522A09B741}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RKSoftware.DAL.EntityFramework.Tests", "Tests\RKSoftware.DAL.EntityFramework.Tests\RKSoftware.DAL.EntityFramework.Tests.csproj", "{9403B8D8-9FAB-4C16-A399-0B522A09B741}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
