@@ -192,6 +192,23 @@ namespace RKSoftware.DAL.EntityFramework
             }
         }
 
+        /// <summary>
+        /// <see cref="ITransactionalStorage.ResetTransactionAsync"/>
+        /// </summary>
+        public async Task ResetTransactionAsync()
+        {
+            await _commitSemaphore.WaitAsync();
+            try
+            {
+                _dbContext.ChangeTracker.Clear();
+                _activeTransaction = false;
+            }
+            finally
+            {
+                _commitSemaphore.Release();
+            }
+        }
+
         private async Task<EntityEntry<T>> AttachEntity<T>(T entity)
             where T : class
         {
