@@ -15,7 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RKSoftware, DAL, in-memory</PackageTags>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -28,7 +28,7 @@
 
   <ItemGroup>    
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="RKSoftware.DAL.Core" Version="1.0.6" />
+    <PackageReference Include="RKSoftware.DAL.Core" Version="1.0.8" />
   </ItemGroup>
 
   <ItemGroup>
