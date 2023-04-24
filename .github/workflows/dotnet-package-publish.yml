@@ -34,8 +34,8 @@ jobs:
         run: dotnet build RKSoftware.DAL.InMemory --configuration Release --no-restore
 
       - name: Push generated DAL Core to NuGet repository
-        run: dotnet nuget push ./RKSoftware.DAL.Core/bin/Release/*.nupkg --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./RKSoftware.DAL.Core/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
       - name: Push generated DAL Entity Framework implementation to NuGet repository
-        run: dotnet nuget push ./RKSoftware.DAL.EntityFramework/bin/Release/*.nupkg --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./RKSoftware.DAL.EntityFramework/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
       - name: Push generated DAL InMemory implementation to NuGet repository
-        run: dotnet nuget push ./RKSoftware.DAL.InMemory/bin/Release/*.nupkg --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./RKSoftware.DAL.InMemory/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
