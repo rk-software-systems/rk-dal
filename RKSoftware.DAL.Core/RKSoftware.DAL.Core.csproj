@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -17,7 +17,7 @@
     <PackageTags>DAL, RKSoftware</PackageTags>
     <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
     <PackageIcon>company-logo.png</PackageIcon>
-    <Version>1.0.8</Version>
+    <Version>2.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>

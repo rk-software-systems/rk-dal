@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RKSoftware.DAL.Contract
@@ -10,7 +9,7 @@ namespace RKSoftware.DAL.Contract
     public interface IReadonlyStorage : IDisposable
     {
         /// <summary>
-        /// Get Set of stored Entries. This method is not thread safe as it is using delayed queriable execution
+        /// Get Set of stored Entries. This method is not thread safe as it is using delayed queryable execution
         /// </summary>
         /// <typeparam name="T">Entry type</typeparam>
         /// <returns>Queryable collection of entries</returns>

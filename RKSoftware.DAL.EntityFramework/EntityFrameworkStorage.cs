@@ -6,12 +6,11 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-//using System.Linq;
 
 namespace RKSoftware.DAL.EntityFramework
 {
     /// <summary>
-    /// <see cref="ITransactionalStorage"/> implelmentation using in Entity Framework
+    /// <see cref="ITransactionalStorage"/> implementation using in Entity Framework
     /// </summary>
     public class EntityFrameworkStorage : EntityFrameworkReadonlyStorage, ITransactionalStorage
     {

@@ -19,7 +19,7 @@ namespace RKSoftware.DAL.InMemory.RegistrationExtensions
         }
 
         /// <summary>
-        /// Register <see cref="IReadonlyStorage"/> in memory reslization
+        /// Register <see cref="IReadonlyStorage"/> in memory realization
         /// </summary>
         /// <param name="services">Service collection where to register storage</param>
         /// <returns></returns>
@@ -29,7 +29,7 @@ namespace RKSoftware.DAL.InMemory.RegistrationExtensions
         }
 
         /// <summary>
-        /// Register <see cref="IStorage"/> in memory reslization
+        /// Register <see cref="IStorage"/> in memory realization
         /// </summary>
         /// <param name="services">Service collection where to register storage</param>
         /// <returns></returns>

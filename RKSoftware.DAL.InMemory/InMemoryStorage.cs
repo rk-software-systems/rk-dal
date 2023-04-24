@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace RKSoftware.DAL.InMemory
 {
     /// <summary>
-    /// <see cref="IStorage"/> in memory implementaion
+    /// <see cref="IStorage"/> in memory implementation
     /// </summary>
     public class InMemoryStorage : IStorage
     {

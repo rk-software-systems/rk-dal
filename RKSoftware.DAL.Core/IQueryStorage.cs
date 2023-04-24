@@ -14,7 +14,7 @@ namespace RKSoftware.DAL.Contract
         /// Query Storage
         /// </summary>
         /// <typeparam name="TResult">Result of query execution</typeparam>
-        /// <typeparam name="TQueriable">DB Query set reqult</typeparam>
+        /// <typeparam name="TQueriable">DB Query set result</typeparam>
         /// <param name="queryBuilder">Delegate that is used to build Storage query</param>
         /// <param name="resultExecutor">Delegate that is used to convert Storage query to result</param>
         /// <returns>Query result</returns>
@@ -25,7 +25,7 @@ namespace RKSoftware.DAL.Contract
         /// Query Storage
         /// </summary>
         /// <typeparam name="TResult">Result of query execution</typeparam>
-        /// <typeparam name="TQueriable">DB Query set reqult</typeparam>
+        /// <typeparam name="TQueriable">DB Query set result</typeparam>
         /// <param name="queryBuilder">Delegate that is used to build Storage query</param>
         /// <param name="resultExecutor">Delegate that is used to convert Storage query to result</param>
         /// <returns>Query result</returns>
@@ -36,7 +36,7 @@ namespace RKSoftware.DAL.Contract
         /// Query Storage
         /// </summary>
         /// <typeparam name="TResult">Result of query execution</typeparam>
-        /// <typeparam name="TQueriable">DB Query set reqult</typeparam>
+        /// <typeparam name="TQueriable">DB Query set result</typeparam>
         /// <param name="queryBuilder">Delegate that is used to build Storage query</param>
         /// <param name="resultExecutor">Delegate that is used to convert Storage query to result</param>
         /// <returns>Query result</returns>
@@ -47,7 +47,7 @@ namespace RKSoftware.DAL.Contract
         /// Query Storage
         /// </summary>
         /// <typeparam name="TResult">Result of query execution</typeparam>
-        /// <typeparam name="TQueriable">DB Query set reqult</typeparam>
+        /// <typeparam name="TQueriable">DB Query set result</typeparam>
         /// <param name="queryBuilder">Delegate that is used to build Storage query</param>
         /// <param name="resultExecutor">Delegate that is used to convert Storage query to result</param>
         /// <returns>Query result</returns>

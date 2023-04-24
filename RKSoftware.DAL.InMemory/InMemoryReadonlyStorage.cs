@@ -24,7 +24,7 @@ namespace RKSoftware.DAL.InMemory
         }
 
         /// <summary>
-        /// <see cref="IDisposable"/> implelmentation
+        /// <see cref="IDisposable"/> implementation
         /// </summary>
         public void Dispose()
         {

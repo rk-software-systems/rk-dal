@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace RKSoftware.DAL.EntityFramework
 {
     /// <summary>
-    /// Entity Framework implelmentation of <see cref="IQueryStorage"/>
+    /// Entity Framework implementation of <see cref="IQueryStorage"/>
     /// </summary>
     public class EntityFrameworkQueryStorage : IQueryStorage
     {
