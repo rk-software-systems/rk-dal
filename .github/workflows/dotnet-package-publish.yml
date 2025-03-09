@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.0.*'
+          dotnet-version: '8.x'
       - name: Install dependencies RKSoftware.DAL.Core
         run: dotnet restore RKSoftware.DAL.Core
       - name: Install dependencies RKSoftware.DAL.EntityFramework
@@ -27,11 +27,11 @@ jobs:
         run: dotnet restore RKSoftware.DAL.InMemory
 
       - name: Build DAL Core package
-        run: dotnet build RKSoftware.DAL.Core --configuration Release --no-restore
+        run: dotnet build RKSoftware.DAL.Core --configuration Release --no-restore -warnaserror
       - name: Build DAL Entity Framework implementation package
-        run: dotnet build RKSoftware.DAL.EntityFramework --configuration Release --no-restore
+        run: dotnet build RKSoftware.DAL.EntityFramework --configuration Release --no-restore -warnaserror
       - name: Build DAL In Memory implementation package
-        run: dotnet build RKSoftware.DAL.InMemory --configuration Release --no-restore
+        run: dotnet build RKSoftware.DAL.InMemory --configuration Release --no-restore -warnaserror
 
       - name: Push generated DAL Core to NuGet repository
         run: dotnet nuget push ./RKSoftware.DAL.Core/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
