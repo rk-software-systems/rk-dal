@@ -15,12 +15,13 @@ public static class EFKeyLocationExtensions
     /// <param name="dbContext">DB context to locate Key Values for particular entity</param>
     /// <param name="entity">Entity to obtain </param>
     /// <returns></returns>
-    public static IEnumerable<object> FindPrimaryKeyValues<T>(this DbContext dbContext, T entity)
+    public static object?[] FindPrimaryKeyValues<T>(this DbContext dbContext, T entity)
     {
         ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
 
-        return from p in dbContext.FindPrimaryKeyProperties<T>()
-               select entity.GetPropertyValue(p.Name);
+        return (from p in dbContext.FindPrimaryKeyProperties<T>()
+                select entity.GetPropertyValue(p.Name))
+               .ToArray();
     }
 
     private static IReadOnlyList<IProperty> FindPrimaryKeyProperties<T>(this DbContext dbContext)

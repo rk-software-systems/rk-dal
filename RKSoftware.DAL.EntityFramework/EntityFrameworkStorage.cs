@@ -198,12 +198,12 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
         catch (InvalidOperationException)
         {
             var keyValues = DbContext.FindPrimaryKeyValues(entity);
-            if (keyValues == null)
+            if (keyValues.Length == 0)
             {
                 return DbContext.Set<T>().Attach(entity);
             }
 
-            var dbEntity = await DbContext.FindAsync<T>(keyValues.ToArray());
+            var dbEntity = await DbContext.FindAsync<T>(keyValues);
             if(dbEntity != null)
             {
                 DbContext.Entry(dbEntity).State = EntityState.Detached;
