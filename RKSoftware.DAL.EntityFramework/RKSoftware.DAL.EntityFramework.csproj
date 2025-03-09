@@ -1,22 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <Authors>Koryakov Konstantin</Authors>
-    <Company>RK Software Systems</Company>
-    <Product>Data Access Layer implementation using Entity Framework core</Product>
-    <Description>This Packages i and implementation of RKSoftware.DAL.Core contracts using Entity Framework core</Description>
-    <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
-    <RepositoryType>github</RepositoryType>
-    <PackageTags>dal, entity framework, RKSoftware</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageIcon>company-logo.png</PackageIcon>
-    <Version>2.0.1</Version>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>   
+    <Version>8.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,9 +16,26 @@
     <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>Koryakov Konstantin</Authors>
+    <Company>RK Software Systems</Company>
+    <Product>Data Access Layer implementation using Entity Framework core</Product>
+    <Description>This Packages is implementation of RKSoftware.DAL.Core contracts using Entity Framework core</Description>
+    <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>dal, entity framework, RKSoftware</PackageTags>
+    <PackageIcon>company-logo.png</PackageIcon>
+    <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
   <ItemGroup>    
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
-    <PackageReference Include="RKSoftware.DAL.Core" Version="2.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\RKSoftware.DAL.Core\RKSoftware.DAL.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +43,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-  </ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>  
 
 </Project>

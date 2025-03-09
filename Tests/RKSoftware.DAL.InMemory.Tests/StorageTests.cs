@@ -1,98 +1,92 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RKSoftware.DAL.InMemory.Tests.Domain;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace RKSoftware.DAL.InMemory.Tests
+namespace RKSoftware.DAL.InMemory.Tests;
+
+[TestClass]
+public class StorageTests
 {
-    [TestClass]
-    public class StorageTests
+    private static InMemoryStorage CreateStorage()
     {
-        private static Tuple<CollectionStorage, InMemoryStorage> CreateStorage()
+        var collectionStorage = new CollectionStorage();
+        return new InMemoryStorage(collectionStorage);
+    }
+
+    [TestMethod]
+    public async Task TestAddMethod()
+    {
+        using var storage = CreateStorage();
+        var entity = new TestEntity()
         {
-            var collectionStorage = new CollectionStorage();
-            var storage = new InMemoryStorage(collectionStorage);
+            TestLongProperty = 1,
+            TestStringProperty = "test string"
+        };
 
-            return new Tuple<CollectionStorage, InMemoryStorage>(collectionStorage, storage);
-        }
+        await storage.AddAsync(entity);
 
-        [TestMethod]
-        public async Task TestAddMethod()
+        Assert.AreEqual(1, storage.Storage.GetCollection<TestEntity>().Count);
+    }
+
+    [TestMethod]
+    public async Task TestAsyncAddMethod()
+    {
+        using var storage = CreateStorage();
+        var entity = new TestEntity()
         {
-            var storages = CreateStorage();
-            var entity = new TestEntity()
-            {
-                TestLongProperty = 1,
-                TestStringProperty = "test string"
-            };
+            TestLongProperty = 1,
+            TestStringProperty = "test string"
+        };
 
-            await storages.Item2.AddAsync(entity);
+        await storage.AddAsync(entity);
 
-            Assert.AreEqual(1, storages.Item1.GetCollection<TestEntity>().Count);
-        }
+        Assert.AreEqual(1, storage.Storage.GetCollection<TestEntity>().Count);
+    }
 
-        [TestMethod]
-        public async Task TestAsyncAddMethod()
+    [TestMethod]
+    public async Task TestRemove()
+    {
+        using var storage = CreateStorage();
+        storage.Storage.GetCollection<TestEntity>().Add(new TestEntity()
         {
-            var storages = CreateStorage();
-            var entity = new TestEntity()
-            {
-                TestLongProperty = 1,
-                TestStringProperty = "test string"
-            };
-
-            await storages.Item2.AddAsync(entity);
-
-            Assert.AreEqual(1, storages.Item1.GetCollection<TestEntity>().Count);
-        }
-
-        [TestMethod]
-        public async Task TestRemove()
+            TestLongProperty = 1
+        });
+        storage.Storage.GetCollection<TestEntity>().Add(new TestEntity()
         {
-            var storages = CreateStorage();
-            storages.Item1.GetCollection<TestEntity>().Add(new TestEntity()
-            {
-                TestLongProperty = 1
-            });
-            storages.Item1.GetCollection<TestEntity>().Add(new TestEntity()
-            {
-                TestLongProperty = 2
-            });
+            TestLongProperty = 2
+        });
 
-            var entityToBeDeleted = storages.Item2.Set<TestEntity>()
-                .FirstOrDefault(x => x.TestLongProperty == 2);
-            Assert.IsNotNull(entityToBeDeleted);
+        var entityToBeDeleted = storage.Set<TestEntity>()
+            .FirstOrDefault(x => x.TestLongProperty == 2);
+        Assert.IsNotNull(entityToBeDeleted);
 
-            Assert.IsTrue(await storages.Item2.RemoveAsync(entityToBeDeleted));
-            Assert.AreEqual(1, storages.Item1.GetCollection<TestEntity>().Count);
-            var remainigEntity = storages.Item2.Set<TestEntity>().FirstOrDefault();
-            Assert.IsNotNull(remainigEntity);
-            Assert.AreEqual(1, remainigEntity.TestLongProperty);
-        }
+        Assert.IsTrue(await storage.RemoveAsync(entityToBeDeleted));
+        Assert.AreEqual(1, storage.Storage.GetCollection<TestEntity>().Count);
+        var remainigEntity = storage.Set<TestEntity>().FirstOrDefault();
+        Assert.IsNotNull(remainigEntity);
+        Assert.AreEqual(1, remainigEntity.TestLongProperty);
+    }
 
-        [TestMethod]
-        public async Task TestRemoveAsync()
+    [TestMethod]
+    public async Task TestRemoveAsync()
+    {
+        using var storage = CreateStorage();
+        storage.Storage.GetCollection<TestEntity>().Add(new TestEntity()
         {
-            var storages = CreateStorage();
-            storages.Item1.GetCollection<TestEntity>().Add(new TestEntity()
-            {
-                TestLongProperty = 1
-            });
-            storages.Item1.GetCollection<TestEntity>().Add(new TestEntity()
-            {
-                TestLongProperty = 2
-            });
+            TestLongProperty = 1
+        });
+        storage.Storage.GetCollection<TestEntity>().Add(new TestEntity()
+        {
+            TestLongProperty = 2
+        });
 
-            var entityToBeDeleted = storages.Item2.Set<TestEntity>()
-                .FirstOrDefault(x => x.TestLongProperty == 2);
-            Assert.IsNotNull(entityToBeDeleted);
+        var entityToBeDeleted = storage.Set<TestEntity>()
+            .FirstOrDefault(x => x.TestLongProperty == 2);
+        Assert.IsNotNull(entityToBeDeleted);
 
-            Assert.IsTrue(await storages.Item2.RemoveAsync(entityToBeDeleted));
-            Assert.AreEqual(1, storages.Item1.GetCollection<TestEntity>().Count);
-            var remainigEntity = storages.Item2.Set<TestEntity>().FirstOrDefault();
-            Assert.IsNotNull(remainigEntity);
-            Assert.AreEqual(1, remainigEntity.TestLongProperty);
-        }
+        Assert.IsTrue(await storage.RemoveAsync(entityToBeDeleted));
+        Assert.AreEqual(1, storage.Storage.GetCollection<TestEntity>().Count);
+        var remainigEntity = storage.Set<TestEntity>().FirstOrDefault();
+        Assert.IsNotNull(remainigEntity);
+        Assert.AreEqual(1, remainigEntity.TestLongProperty);
     }
 }

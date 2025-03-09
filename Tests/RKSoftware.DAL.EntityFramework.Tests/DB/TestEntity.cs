@@ -1,25 +1,19 @@
-﻿using System;
+﻿namespace RKSoftware.DAL.EntityFramework.Tests.DB;
 
-namespace RKSoftware.DAL.EntityFramework.Domain
+public class TestEntity
 {
-    public class TestEntity
+    public string? TestStringProperty { get; set; }
+
+    public long TestLongProperty { get; set; }
+
+    public DateTime TestDateProperty { get; set; }
+
+    public bool CompareTo(TestEntity other)
     {
-        public string TestStringProperty { get; set; }
+        ArgumentNullException.ThrowIfNull(other, nameof(other));
 
-        public long TestLongProperty { get; set; }
-
-        public DateTime TestDateProperty { get; set; }
-
-        public bool CompareTo(TestEntity other)
-        {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
-
-            return TestStringProperty == other.TestStringProperty
-                && TestLongProperty == other.TestLongProperty
-                && TestDateProperty == other.TestDateProperty;
-        }
+        return TestStringProperty == other.TestStringProperty
+            && TestLongProperty == other.TestLongProperty
+            && TestDateProperty == other.TestDateProperty;
     }
 }

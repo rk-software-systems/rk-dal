@@ -1,43 +1,44 @@
-﻿using RKSoftware.DAL.Contract;
-using System;
-using System.Linq;
+﻿using RKSoftware.DAL.Core;
 
-namespace RKSoftware.DAL.InMemory
+namespace RKSoftware.DAL.InMemory;
+
+/// <summary>
+/// In memory realization of <see cref="IReadonlyStorage"/>
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="InMemoryReadonlyStorage"/> class.
+/// </remarks>
+/// <param name="collectionStorage"></param>
+#pragma warning disable CA1063 // Implement IDisposable Correctly
+public class InMemoryReadonlyStorage(CollectionStorage collectionStorage) : IReadonlyStorage
+#pragma warning restore CA1063 // Implement IDisposable Correctly
 {
     /// <summary>
-    /// In memory realization of <see cref="IReadonlyStorage"/>
+    /// In memory storage
     /// </summary>
-    public class InMemoryReadonlyStorage : IReadonlyStorage
+    private readonly CollectionStorage _storage = collectionStorage;
+
+    /// <summary>
+    /// In memory storage
+    /// </summary>
+    public CollectionStorage Storage => _storage;
+
+    /// <summary>
+    /// <see cref="IDisposable"/> implementation
+    /// </summary>
+#pragma warning disable CA1063 // Implement IDisposable Correctly
+    public void Dispose()
+#pragma warning restore CA1063 // Implement IDisposable Correctly
     {
-        /// <summary>
-        /// In memory storage
-        /// </summary>
-        protected readonly CollectionStorage _storage;
+        GC.SuppressFinalize(this);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InMemoryReadonlyStorage"/> class.
-        /// </summary>
-        /// <param name="collectionStorage"></param>
-        public InMemoryReadonlyStorage(CollectionStorage collectionStorage)
-        {
-            _storage = collectionStorage;
-        }
-
-        /// <summary>
-        /// <see cref="IDisposable"/> implementation
-        /// </summary>
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// <see cref="IReadonlyStorage.Set{T}"/>
-        /// </summary>
-        public IQueryable<T> Set<T>() where T : class
-        {
-            return _storage.GetCollection<T>()
-                .AsQueryable();
-        }
+    /// <summary>
+    /// <see cref="IReadonlyStorage.Set{T}"/>
+    /// </summary>
+    public IQueryable<T> Set<T>() where T : class
+    {
+        return _storage.GetCollection<T>()
+            .AsQueryable();
     }
 }

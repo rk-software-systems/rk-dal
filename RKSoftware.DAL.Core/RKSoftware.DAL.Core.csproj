@@ -1,23 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Company>RK Software Systems</Company>
-    <Product>Data Access layer core contracts</Product>
-    <Description>This package  contains core contracts that can be used to implement Data Access Layer for .NET projects</Description>
-    <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>DAL, RKSoftware</PackageTags>
-    <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
-    <PackageIcon>company-logo.png</PackageIcon>
-    <Version>2.0.2</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <Version>8.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,12 +15,28 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
+    
+  <PropertyGroup>
+    <Company>RK Software Systems</Company>
+    <Product>Data Access layer core contracts</Product>
+    <Description>This package contains core contracts that can be used to implement Data Access Layer for .NET projects</Description>
+    <RepositoryUrl>https://github.com/rk-software-systems/rk-dal</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>DAL, RKSoftware</PackageTags>
+    <PackageProjectUrl>https://github.com/rk-software-systems/rk-dal</PackageProjectUrl>
+    <PackageIcon>company-logo.png</PackageIcon>
+    <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>  
   
   <ItemGroup>
     <None Include="..\company-logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
-
 </Project>

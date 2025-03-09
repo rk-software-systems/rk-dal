@@ -1,22 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RKSoftware.DAL.EntityFramework.Domain;
 
-namespace RKSoftware.DAL.EntityFramework.Tests.DB
+namespace RKSoftware.DAL.EntityFramework.Tests.DB;
+
+public static class DBContextInitializer
 {
-    public static class DBContextInitializer
+    public static IServiceCollection RegisterDBContext(string dbName)
     {
-        public static IServiceCollection RegisterDBContext(string dbName)
+        var services = new ServiceCollection();
+
+        services.AddDbContextPool<SampleDBContext>(options =>
         {
-            var services = new ServiceCollection();
+            options.UseInMemoryDatabase(databaseName: dbName);
+        });
+        services.AddScoped<DbContext, SampleDBContext>();
 
-            services.AddDbContextPool<SampleDBContext>(options =>
-            {
-                options.UseInMemoryDatabase(databaseName: dbName);
-            });
-            services.AddScoped<DbContext, SampleDBContext>();
-
-            return services;
-        }
+        return services;
     }
 }
