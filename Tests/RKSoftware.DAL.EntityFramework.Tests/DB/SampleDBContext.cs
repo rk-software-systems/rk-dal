@@ -1,21 +1,13 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace RKSoftware.DAL.EntityFramework.Domain
+namespace RKSoftware.DAL.EntityFramework.Tests.DB;
+
+public class SampleDBContext(DbContextOptions<SampleDBContext> options) : DbContext(options)
 {
-    public class SampleDBContext: DbContext
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public SampleDBContext(DbContextOptions<SampleDBContext> options)
-        : base(options) { }
+        ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            if (modelBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(modelBuilder));
-            }
-
-            modelBuilder.ApplyConfiguration(new TestEntityMap());
-        }
+        modelBuilder.ApplyConfiguration(new TestEntityMap());
     }
 }

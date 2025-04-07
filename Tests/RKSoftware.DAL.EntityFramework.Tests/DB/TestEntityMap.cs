@@ -2,21 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace RKSoftware.DAL.EntityFramework.Domain
+namespace RKSoftware.DAL.EntityFramework.Tests.DB;
+
+public class TestEntityMap : IEntityTypeConfiguration<TestEntity>
 {
-    public class TestEntityMap : IEntityTypeConfiguration<TestEntity>
+    public void Configure(EntityTypeBuilder<TestEntity> builder)
     {
-        public void Configure(EntityTypeBuilder<TestEntity> builder)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
-            builder.HasKey(x => x.TestLongProperty);
+        builder.HasKey(x => x.TestLongProperty);
 
-            builder.Property(x => x.TestStringProperty)
-                .IsRequired();
-        }
+        builder.Property(x => x.TestStringProperty)
+            .IsRequired();
     }
 }

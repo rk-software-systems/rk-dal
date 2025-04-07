@@ -1,233 +1,215 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using RKSoftware.DAL.Contract;
+using RKSoftware.DAL.Core;
 using RKSoftware.DAL.EntityFramework.EFExtensions;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace RKSoftware.DAL.EntityFramework
+namespace RKSoftware.DAL.EntityFramework;
+
+/// <summary>
+/// <see cref="ITransactionalStorage"/> implementation using in Entity Framework
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="EntityFrameworkStorage"/> class.
+/// </remarks>
+public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonlyStorage(context), ITransactionalStorage
 {
-    /// <summary>
-    /// <see cref="ITransactionalStorage"/> implementation using in Entity Framework
-    /// </summary>
-    public class EntityFrameworkStorage : EntityFrameworkReadonlyStorage, ITransactionalStorage
-    {
-        private readonly DbContext _dbContext;
-        private bool _activeTransaction;
-        private static readonly SemaphoreSlim _commitSemaphore = new(1, 1);
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+    private bool _activeTransaction = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
+    private static readonly SemaphoreSlim _commitSemaphore = new(1, 1);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EntityFrameworkStorage"/> class.
-        /// </summary>
-        public EntityFrameworkStorage(DbContext context)
-            : base(context)
+    /// <summary>
+    /// <see cref="IStorage.AddAsync{T}(T)"/>
+    /// </summary>
+    public async Task<T> AddAsync<T>(T entity) where T : class
+    {
+        return await AddAsync(entity, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.AddAsync{T}(T, CancellationToken)"/>
+    /// </summary>
+    public async Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        var entry = DbContext.Set<T>().Add(entity);
+
+        if (!_activeTransaction)
         {
-            _dbContext = context ?? throw new ArgumentNullException(nameof(context));
+            await _commitSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                if (!_activeTransaction)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        entry.State = EntityState.Detached;
+                        return entity;
+                    }
+
+                    await DbContext.SaveChangesAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                _commitSemaphore.Release();
+            }
+        }
+
+        return entry.Entity;
+    }
+
+    /// <summary>
+    /// <see cref="ITransactionalStorage.BeginTransaction"/>
+    /// </summary>
+    public void BeginTransaction()
+    {
+        _activeTransaction = true;
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.RemoveAsync{T}(T)"/>
+    /// </summary>
+    public async Task<bool> RemoveAsync<T>(T entity) where T : class
+    {
+        return await RemoveAsync(entity, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.RemoveAsync{T}(T, CancellationToken)"/>
+    /// </summary>
+    public async Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        var entry = await AttachEntity(entity);
+        entry.State = EntityState.Deleted;
+
+        if (!_activeTransaction)
+        {
+            await _commitSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                if (!_activeTransaction)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        entry.State = EntityState.Detached;
+                        return false;
+                    }
+
+                    await DbContext.SaveChangesAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                _commitSemaphore.Release();
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.SaveAsync{T}(T)"/>
+    /// </summary>
+    public async Task<T> SaveAsync<T>(T entity) where T : class
+    {
+        return await SaveAsync(entity, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.SaveAsync{T}(T, CancellationToken)"/>
+    /// </summary>
+    public async Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        var entry = await AttachEntity(entity);
+        entry.State = EntityState.Modified;
+
+        if (!_activeTransaction)
+        {
+            await _commitSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                if (!_activeTransaction)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        entry.State = EntityState.Detached;
+                        return entity;
+                    }
+
+                    await DbContext.SaveChangesAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                entry.State = EntityState.Detached;
+                _commitSemaphore.Release();
+            }
+        }
+
+        return entry.Entity;
+    }
+
+    /// <summary>
+    /// <see cref="ITransactionalStorage.CommitTransactionAsync"/>
+    /// </summary>
+    public async Task CommitTransactionAsync()
+    {
+        await _commitSemaphore.WaitAsync();
+        try
+        {
+            _activeTransaction = false;
+            await DbContext.SaveChangesAsync();
+        }
+        finally
+        {
+            _commitSemaphore.Release();
+        }
+    }
+
+    /// <summary>
+    /// <see cref="ITransactionalStorage.ResetTransactionAsync"/>
+    /// </summary>
+    public async Task ResetTransactionAsync()
+    {
+        await _commitSemaphore.WaitAsync();
+        try
+        {
+            DbContext.ChangeTracker.Clear();
             _activeTransaction = false;
         }
-
-        /// <summary>
-        /// <see cref="IStorage.AddAsync{T}(T)"/>
-        /// </summary>
-        public async Task<T> AddAsync<T>(T entity) where T : class
+        finally
         {
-            return await AddAsync(entity, CancellationToken.None);
+            _commitSemaphore.Release();
         }
+    }
 
-        /// <summary>
-        /// <see cref="IStorage.AddAsync{T}(T, CancellationToken)"/>
-        /// </summary>
-        public async Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken) where T : class
+    private async Task<EntityEntry<T>> AttachEntity<T>(T entity) where T : class
+    {
+        try
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            var entry = _dbContext.Set<T>().Add(entity);
-
-            if (!_activeTransaction)
-            {
-                await _commitSemaphore.WaitAsync(cancellationToken);
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            entry.State = EntityState.Detached;
-                            return entity;
-                        }
-
-                        await _dbContext.SaveChangesAsync(cancellationToken);
-                    }
-                }
-                finally
-                {
-                    _commitSemaphore.Release();
-                }
-            }
-
-            return entry.Entity;
+            return DbContext.Set<T>().Attach(entity);
         }
-
-        /// <summary>
-        /// <see cref="ITransactionalStorage.BeginTransaction"/>
-        /// </summary>
-        public void BeginTransaction()
+        catch (InvalidOperationException)
         {
-            _activeTransaction = true;
-        }
-
-        /// <summary>
-        /// <see cref="IStorage.RemoveAsync{T}(T)"/>
-        /// </summary>
-        public async Task<bool> RemoveAsync<T>(T entity) where T : class
-        {
-            return await RemoveAsync(entity, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// <see cref="IStorage.RemoveAsync{T}(T, CancellationToken)"/>
-        /// </summary>
-        public async Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
-        {
-            if (entity == null)
+            var keyValues = DbContext.FindPrimaryKeyValues(entity);
+            if (keyValues.Length == 0)
             {
-                throw new ArgumentNullException(nameof(entity));
+                return DbContext.Set<T>().Attach(entity);
             }
 
-            var entry = await AttachEntity(entity);
-            entry.State = EntityState.Deleted;
-
-            if (!_activeTransaction)
+            var dbEntity = await DbContext.FindAsync<T>(keyValues);
+            if(dbEntity != null)
             {
-                await _commitSemaphore.WaitAsync(cancellationToken);
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            entry.State = EntityState.Detached;
-                            return false;
-                        }
+                DbContext.Entry(dbEntity).State = EntityState.Detached;
+            }           
 
-                        await _dbContext.SaveChangesAsync(cancellationToken);
-                    }
-                }
-                finally
-                {
-                    _commitSemaphore.Release();
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// <see cref="IStorage.SaveAsync{T}(T)"/>
-        /// </summary>
-        public async Task<T> SaveAsync<T>(T entity) where T : class
-        {
-            return await SaveAsync(entity, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// <see cref="IStorage.SaveAsync{T}(T, CancellationToken)"/>
-        /// </summary>
-        public async Task<T> SaveAsync<T>(T entity, CancellationToken cancellationToken) where T : class
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            var entry = await AttachEntity(entity);
-            entry.State = EntityState.Modified;
-
-            if (!_activeTransaction)
-            {
-                await _commitSemaphore.WaitAsync(cancellationToken);
-                try
-                {
-                    if (!_activeTransaction)
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            entry.State = EntityState.Detached;
-                            return entity;
-                        }
-
-                        await _dbContext.SaveChangesAsync(cancellationToken);
-                    }
-                }
-                finally
-                {
-                    entry.State = EntityState.Detached;
-                    _commitSemaphore.Release();
-                }
-            }
-
-            return entry.Entity;
-        }
-
-        /// <summary>
-        /// <see cref="ITransactionalStorage.CommitTransactionAsync"/>
-        /// </summary>
-        public async Task CommitTransactionAsync()
-        {
-            await _commitSemaphore.WaitAsync();
-            try
-            {
-                _activeTransaction = false;
-                await _dbContext.SaveChangesAsync();
-            }
-            finally
-            {
-                _commitSemaphore.Release();
-            }
-        }
-
-        /// <summary>
-        /// <see cref="ITransactionalStorage.ResetTransactionAsync"/>
-        /// </summary>
-        public async Task ResetTransactionAsync()
-        {
-            await _commitSemaphore.WaitAsync();
-            try
-            {
-                _dbContext.ChangeTracker.Clear();
-                _activeTransaction = false;
-            }
-            finally
-            {
-                _commitSemaphore.Release();
-            }
-        }
-
-        private async Task<EntityEntry<T>> AttachEntity<T>(T entity)
-            where T : class
-        {
-            try
-            {
-                return _dbContext.Set<T>().Attach(entity);
-            }
-            catch (InvalidOperationException)
-            {
-                var keyValues = _dbContext.FindPrimaryKeyValues(entity);
-                if (keyValues == null)
-                {
-                    return _dbContext.Set<T>().Attach(entity);
-                }
-
-                var dbEntity = await _dbContext.FindAsync<T>(keyValues.ToArray());
-                _dbContext.Entry(dbEntity).State = EntityState.Detached;
-
-                return _dbContext.Set<T>().Attach(entity);
-            }
+            return DbContext.Set<T>().Attach(entity);
         }
     }
 }
