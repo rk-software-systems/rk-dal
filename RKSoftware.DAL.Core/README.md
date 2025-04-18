@@ -31,8 +31,8 @@ Or via the NuGet Package Manager in Visual Studio.
 This library contains interfaces that need to be implemented by your DAL classes according to the underlying data source (e.g., SQL Server, MongoDB, etc.). The core interfaces include:
 - `IQueryStorage`:
   - This service is used to query Readonly storage.
-  - Impelmentation shoul be thread safe.
-- `IReadonlyStorage` - This storage can be used to preform only READ operations
+  - Implementation should be thread-safe.
+- `IReadonlyStorage` - This storage can be used to perform only READ operations
 - `IStorage`:
   - This service is used as a READ / WRITE Storage abstraction
   - This service implements `IReadonlyStorage`

@@ -77,10 +77,9 @@ services.UseInMemory()
 
 #### Available Registration Methods
 
-•	**UseInMemory**: Initializes the in-memory storage configuration.
-•	**AddReadonlyStorage**: Registers read-only storage.
-•	**AddStorage**: Registers full CRUD storage.
-
+**UseInMemory**: Initializes the in-memory storage configuration.
+**AddReadonlyStorage**: Registers read-only storage.
+**AddStorage**: Registers full CRUD storage.
 ## Documentation
 
 For more details about the core contracts, refer to the [RKSoftware.DAL.Core documentation](https://github.com/rk-software-systems/rk-dal).
