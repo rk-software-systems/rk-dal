@@ -28,9 +28,9 @@ jobs:
 
       # Run Unit Tests
       - name: Run Unit Tests for DAL Entity Framework
-        run: dotnet test RKSoftware.DAL.EntityFramework.Tests --configuration Release --no-restore --verbosity normal
+        run: dotnet test ./Tests/RKSoftware.DAL.EntityFramework.Tests/RKSoftware.DAL.EntityFramework.Tests.csproj --configuration Release --no-restore --verbosity normal
       - name: Run Unit Tests for DAL InMemory
-        run: dotnet test RKSoftware.DAL.InMemory.Tests --configuration Release --no-restore --verbosity normal
+        run: dotnet test ./Tests/RKSoftware.DAL.InMemory.Tests/RKSoftware.DAL.InMemory.Tests.csproj --configuration Release --no-restore --verbosity normal
 
       # Build Packages
       - name: Build DAL Core package

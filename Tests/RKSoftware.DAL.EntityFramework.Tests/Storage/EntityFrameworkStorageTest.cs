@@ -109,7 +109,7 @@ public class EntityFrameworkStorageTest
     [TestMethod]
     public async Task TestRemove()
     {
-        using var scope = GetScope(nameof(TestUpdate));
+        using var scope = GetScope(nameof(TestRemove));
         var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
         var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
 
@@ -137,7 +137,7 @@ public class EntityFrameworkStorageTest
     [TestMethod]
     public async Task TestRemoveNonExisting()
     {
-        using var scope = GetScope(nameof(TestUpdate));
+        using var scope = GetScope(nameof(TestRemoveNonExisting));
         var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
         var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
 
