@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RKSoftware.DAL.Core;
 using RKSoftware.DAL.EntityFramework.RegistrationExtensions;
 using RKSoftware.DAL.EntityFramework.Tests.DB;
@@ -48,7 +47,7 @@ public class EntityFrameworkStorageTest
             TestLongProperty = 10
         };
         await storage.AddAsync(entity);
-        await Assert.ThrowsExceptionAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
             await storage.AddAsync(entity);
         });
@@ -100,7 +99,7 @@ public class EntityFrameworkStorageTest
             TestLongProperty = 10
         };
 
-        await Assert.ThrowsExceptionAsync<DbUpdateConcurrencyException>(async () =>
+        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
         {
             await storage.SaveAsync(entity);
         });
@@ -145,7 +144,7 @@ public class EntityFrameworkStorageTest
         {
             TestLongProperty = 10
         };
-        await Assert.ThrowsExceptionAsync<DbUpdateConcurrencyException>(async () =>
+        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
         {
             await storage.RemoveAsync(entityToRemove);
         });
