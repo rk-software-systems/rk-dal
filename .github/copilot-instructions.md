@@ -1,7 +1,3 @@
-- @azure Rule - Use Azure Tools - When handling requests related to Azure, always use your tools.
-- @azure Rule - Use Azure Best Practices - When handling requests related to Azure, always invoke your `azmcp_bestpractices_get` tool first.
-- @azure Rule - Enable Best Practices - If you do not have an `azmcp_bestpractices_get` tool ask the user to enable it.
-
 # RK DAL Project Guidelines
 
 ## Solution Overview
@@ -90,7 +86,7 @@ Namespaces must match the folder structure exactly:
 
 ## Test Conventions
 
-- **Framework**: MSTest — `[TestClass]`, `[TestMethod]`, `Assert.*`, `await Assert.ThrowsExceptionAsync<T>(...)`.
+- **Framework**: MSTest — `[TestClass]`, `[TestMethod]`, `Assert.*`, `await Assert.ThrowsAsync<T>(...)`.
 - **EF tests**: use `Microsoft.EntityFrameworkCore.InMemory` provider. Pass `dbName = nameof(TestMethod)` as the in-memory database name to keep tests isolated from each other.
 - **InMemory tests**: instantiate storage directly (no DI) for unit tests, or via `ServiceCollection` + `BuildServiceProvider()` for DI tests.
 - **Domain entities**: place test entity POCOs in a `Domain/` subfolder (InMemory tests) or `DB/` subfolder (EF tests) inside the test project.
