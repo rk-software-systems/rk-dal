@@ -14,7 +14,7 @@ This package is part of the RK Software Systems ecosystem and is designed to sim
 - Full implementation of `RKSoftware.DAL.Core` contracts using Entity Framework Core.
 - Supports transactional operations with `ITransactionalStorage`.
 - Simplifies CRUD operations with `IStorage` and `IReadonlyStorage`.
-- Compatible with .NET 9.0.
+- Compatible with .NET 10.0.
 - Extensible and easy to integrate with existing projects.
 
 ## Installation
@@ -22,7 +22,7 @@ This package is part of the RK Software Systems ecosystem and is designed to sim
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.EntityFramework --version 9.0.1
+dotnet add package RKSoftware.DAL.EntityFramework --version 10.0.1
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
@@ -123,5 +123,5 @@ This package is licensed under the **MIT OR Apache-2.0** license. You may choose
 - DAL
 - RKSoftware
 - Entity Framework
-- .NET 9
+- .NET 10
 - Data Access Layer

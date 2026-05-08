@@ -5,14 +5,14 @@
 
 ## Overview
 
-**RKSoftware.DAL.Core** is a .NET library that provides core contracts for implementing a Data Access Layer (DAL) in .NET projects. It is designed to be lightweight, flexible, and compatible with .NET 9.0.
+**RKSoftware.DAL.Core** is a .NET library that provides core contracts for implementing a Data Access Layer (DAL) in .NET projects. It is designed to be lightweight, flexible, and compatible with .NET 10.0.
 
 This package is part of the RK Software Systems ecosystem and serves as the foundation for building robust and reusable DAL implementations.
 
 ## Features
 
 - Core contracts for DAL implementations.
-- Compatible with .NET 9.0.
+- Compatible with .NET 10.0.
 - Designed for extensibility and ease of use.
 - Fully documented and adheres to modern .NET coding standards.
 
@@ -21,7 +21,7 @@ This package is part of the RK Software Systems ecosystem and serves as the foun
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.Core --version 9.0.1
+dotnet add package RKSoftware.DAL.Core --version 10.0.1
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
@@ -61,5 +61,5 @@ This package is licensed under the **MIT OR Apache-2.0** license. You may choose
 
 - DAL
 - RKSoftware
-- .NET 9
+- .NET 10
 - Data Access Layer
