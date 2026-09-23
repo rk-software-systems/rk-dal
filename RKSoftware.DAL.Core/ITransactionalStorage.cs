@@ -8,8 +8,14 @@ public interface ITransactionalStorage : IStorage
     /// <summary>
     /// After this operation, all subsequent operations won't be persisted in storage before commit.
     /// </summary>
-    void BeginTransaction();
+    Task BeginTransactionAsync();
 
+    /// <summary>
+    /// After this operation, all subsequent operations won't be persisted in storage before commit.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token to observe.</param>
+    Task BeginTransactionAsync(CancellationToken cancellationToken);
+    
     /// <summary>
     /// Persist all accumulated operations to storage.
     /// </summary>

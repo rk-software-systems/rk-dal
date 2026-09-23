@@ -60,12 +60,29 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
         return entry.Entity;
     }
 
-    /// <summary>
-    /// <see cref="ITransactionalStorage.BeginTransaction"/>
+/// <summary>
+    /// <see cref="ITransactionalStorage.BeginTransactionAsync()"/>
     /// </summary>
-    public void BeginTransaction()
+    public async Task BeginTransactionAsync()
     {
-        _activeTransaction = true;
+        await BeginTransactionAsync(CancellationToken.None);
+    }
+
+    /// <summary>
+    /// <see cref="ITransactionalStorage.BeginTransactionAsync(CancellationToken)"/>
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token to observe.</param>
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken)
+    {
+        await _commitSemaphore.WaitAsync(cancellationToken);
+        try
+        {
+            _activeTransaction = true;
+        }
+        finally
+        {
+            _commitSemaphore.Release();
+        }
     }
 
     /// <summary>
@@ -164,10 +181,14 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
         try
         {
             _activeTransaction = false;
-            await DbContext.SaveChangesAsync();
+            if (DbContext.ChangeTracker.HasChanges())
+            {
+                await DbContext.SaveChangesAsync();
+            }
         }
         finally
         {
+            DbContext.ChangeTracker.Clear();
             _commitSemaphore.Release();
         }
     }
@@ -204,10 +225,10 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
             }
 
             var dbEntity = await DbContext.FindAsync<T>(keyValues);
-            if(dbEntity != null)
+            if (dbEntity != null)
             {
                 DbContext.Entry(dbEntity).State = EntityState.Detached;
-            }           
+            }
 
             return DbContext.Set<T>().Attach(entity);
         }
