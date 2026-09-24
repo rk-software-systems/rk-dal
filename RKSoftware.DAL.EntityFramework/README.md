@@ -22,7 +22,7 @@ This package is part of the RK Software Systems ecosystem and is designed to sim
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.EntityFramework --version 10.0.1
+dotnet add package RKSoftware.DAL.EntityFramework --version 10.0.2
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
@@ -56,7 +56,7 @@ public class Example {
       try
       {
           // Begin a transaction
-          _transactionalStorage.BeginTransaction();
+          await _transactionalStorage.BeginTransactionAsync();
   
           // Add an entity
           var entity = new MyEntity { Id = 1, Name = "Sample Entity" };
@@ -77,6 +77,15 @@ public class Example {
   }
 }
 ```
+
+### Transaction behavior
+
+- Without an active transaction, each `AddAsync`, `SaveAsync` and `RemoveAsync` call is persisted immediately.
+- After `BeginTransactionAsync`, these operations are only tracked and are not persisted until `CommitTransactionAsync` is called.
+- `CommitTransactionAsync` persists the tracked changes and ends the transaction. It does nothing if no transaction is active. The change tracker is always cleared afterwards, even if saving fails, so entities are detached after a commit.
+- `ResetTransactionAsync` discards all uncommitted changes and ends the transaction.
+
+> **Upgrading from 10.0.1:** `BeginTransaction()` was replaced by `BeginTransactionAsync()`. `BeginTransactionAsync`, `CommitTransactionAsync` and `ResetTransactionAsync` all have `CancellationToken` overloads.
 
 
 ### Configuration

@@ -21,7 +21,7 @@ This package is part of the RK Software Systems ecosystem and serves as the foun
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.Core --version 10.0.1
+dotnet add package RKSoftware.DAL.Core --version 10.0.2
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
@@ -39,6 +39,9 @@ This library contains interfaces that need to be implemented by your DAL classes
 - `ITransactionalStorage`:
   - This service abstracts storage that supports Transactions.
   - Inherits from `IStorage`
+  - `BeginTransactionAsync` (with a `CancellationToken` overload) starts a transaction; subsequent operations are not persisted until commit.
+  - `CommitTransactionAsync` (with a `CancellationToken` overload) persists accumulated operations and ends the transaction; does nothing if no transaction is active.
+  - `ResetTransactionAsync` (with a `CancellationToken` overload) discards uncommitted changes and ends the transaction.
 
 # Documentation
 

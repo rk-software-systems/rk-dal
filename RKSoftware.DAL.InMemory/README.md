@@ -12,7 +12,6 @@ This package is part of the RK Software Systems ecosystem and provides a simple,
 ## Features
 
 - Full implementation of `RKSoftware.DAL.Core` contracts using in-memory storage.
-- Supports transactional operations with `ITransactionalStorage`.
 - Simplifies CRUD operations with `IStorage` and `IReadonlyStorage`.
 - Compatible with .NET 10.0.
 - Lightweight and easy to integrate with existing projects.
@@ -22,7 +21,7 @@ This package is part of the RK Software Systems ecosystem and provides a simple,
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.InMemory --version 10.0.1
+dotnet add package RKSoftware.DAL.InMemory --version 10.0.2
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
