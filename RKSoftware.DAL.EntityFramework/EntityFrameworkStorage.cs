@@ -180,15 +180,26 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
         await _commitSemaphore.WaitAsync();
         try
         {
-            _activeTransaction = false;
-            if (DbContext.ChangeTracker.HasChanges())
+            if (!_activeTransaction)
             {
-                await DbContext.SaveChangesAsync();
+                return;
+            }
+
+            _activeTransaction = false;
+            try
+            {
+                if (DbContext.ChangeTracker.HasChanges())
+                {
+                    await DbContext.SaveChangesAsync();
+                }
+            }
+            finally
+            {
+                DbContext.ChangeTracker.Clear();
             }
         }
         finally
         {
-            DbContext.ChangeTracker.Clear();
             _commitSemaphore.Release();
         }
     }
