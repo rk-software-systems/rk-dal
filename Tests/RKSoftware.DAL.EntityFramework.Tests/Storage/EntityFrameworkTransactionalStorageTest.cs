@@ -281,4 +281,56 @@ public class EntityFrameworkTransactionalStorageTest
 
         Assert.HasCount(1, await ReadAllAsync(provider));
     }
+
+    [TestMethod]
+    public async Task TestCommitTransactionWithCanceledToken()
+    {
+        using var provider = GetProvider(nameof(TestCommitTransactionWithCanceledToken));
+        using var scope = provider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+        var storage = scope.ServiceProvider.GetRequiredService<ITransactionalStorage>();
+        using var cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+
+        await storage.BeginTransactionAsync();
+        await storage.AddAsync(CreateEntity(10));
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await storage.CommitTransactionAsync(cts.Token);
+        });
+
+        Assert.IsEmpty(await ReadAllAsync(provider));
+        Assert.HasCount(1, dbContext.ChangeTracker.Entries());
+
+        await storage.CommitTransactionAsync();
+
+        Assert.HasCount(1, await ReadAllAsync(provider));
+    }
+
+    [TestMethod]
+    public async Task TestResetTransactionWithCanceledToken()
+    {
+        using var provider = GetProvider(nameof(TestResetTransactionWithCanceledToken));
+        using var scope = provider.CreateScope();
+        var storage = scope.ServiceProvider.GetRequiredService<ITransactionalStorage>();
+        using var cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+
+        await storage.BeginTransactionAsync();
+        await storage.AddAsync(CreateEntity(10));
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await storage.ResetTransactionAsync(cts.Token);
+        });
+
+        await storage.AddAsync(CreateEntity(11));
+
+        Assert.IsEmpty(await ReadAllAsync(provider));
+
+        await storage.CommitTransactionAsync();
+
+        Assert.HasCount(2, await ReadAllAsync(provider));
+    }
 }
