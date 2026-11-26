@@ -21,7 +21,7 @@ This package is part of the RK Software Systems ecosystem and serves as the foun
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.Core --version 10.0.2
+dotnet add package RKSoftware.DAL.Core --version 10.0.3
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
@@ -36,6 +36,7 @@ This library contains interfaces that need to be implemented by your DAL classes
 - `IStorage`:
   - This service is used as a READ / WRITE Storage abstraction
   - This service implements `IReadonlyStorage`
+  - `RemoveAsync(IQueryable<T> query)` (with a `CancellationToken` overload) removes all entities matched by the query and returns `true` if anything was removed.
 - `ITransactionalStorage`:
   - This service abstracts storage that supports Transactions.
   - Inherits from `IStorage`

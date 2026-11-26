@@ -89,4 +89,68 @@ public class StorageTests
         Assert.IsNotNull(remainigEntity);
         Assert.AreEqual(1, remainigEntity.TestLongProperty);
     }
+
+    private static InMemoryStorage CreateSeededStorage(params long[] keys)
+    {
+        var storage = CreateStorage();
+        foreach (var key in keys)
+        {
+            storage.Storage.GetCollection<TestEntity>().Add(new TestEntity()
+            {
+                TestLongProperty = key
+            });
+        }
+
+        return storage;
+    }
+
+    [TestMethod]
+    public async Task TestRemoveByQuery()
+    {
+        using var storage = CreateSeededStorage(1, 2, 3);
+
+        var removed = await storage.RemoveAsync(storage.Set<TestEntity>().Where(x => x.TestLongProperty >= 2));
+
+        Assert.IsTrue(removed);
+        var remaining = storage.Storage.GetCollection<TestEntity>();
+        Assert.AreEqual(1, remaining.Count);
+        Assert.AreEqual(1, remaining.First().TestLongProperty);
+    }
+
+    [TestMethod]
+    public async Task TestRemoveByQueryNoMatches()
+    {
+        using var storage = CreateSeededStorage(1, 2);
+
+        var removed = await storage.RemoveAsync(storage.Set<TestEntity>().Where(x => x.TestLongProperty > 10));
+
+        Assert.IsFalse(removed);
+        Assert.AreEqual(2, storage.Storage.GetCollection<TestEntity>().Count);
+    }
+
+    [TestMethod]
+    public async Task TestRemoveByQueryWithCanceledToken()
+    {
+        using var storage = CreateSeededStorage(1, 2);
+        using var cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await storage.RemoveAsync(storage.Set<TestEntity>(), cts.Token);
+        });
+
+        Assert.AreEqual(2, storage.Storage.GetCollection<TestEntity>().Count);
+    }
+
+    [TestMethod]
+    public async Task TestRemoveByQueryNull()
+    {
+        using var storage = CreateStorage();
+
+        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        {
+            await storage.RemoveAsync((IQueryable<TestEntity>)null!);
+        });
+    }
 }

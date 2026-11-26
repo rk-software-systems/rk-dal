@@ -43,6 +43,23 @@ public class InMemoryStorage(CollectionStorage collectionStorage) : InMemoryRead
     }
 
     /// <summary>
+    /// <see cref="IStorage.RemoveAsync{T}(IQueryable{T})"/>
+    /// </summary>
+    public Task<bool> RemoveAsync<T>(IQueryable<T> query) where T : class
+    {
+        return Task.FromResult(RemoveRange(query));
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.RemoveAsync{T}(IQueryable{T}, CancellationToken)"/>
+    /// </summary>
+    public Task<bool> RemoveAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(RemoveRange(query));
+    }
+
+    /// <summary>
     /// <see cref="IStorage.SaveAsync{T}(T)"/>
     /// </summary>
     public Task<T> SaveAsync<T>(T entity) where T : class
@@ -88,5 +105,22 @@ public class InMemoryStorage(CollectionStorage collectionStorage) : InMemoryRead
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
         return Storage.GetCollection<T>().Remove(entity);
+    }
+
+    private bool RemoveRange<T>(IQueryable<T> query) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(query, nameof(query));
+
+        // Materialize first: the query may enumerate the same collection we remove from.
+        var toRemove = query.ToList();
+        var collection = Storage.GetCollection<T>();
+
+        var removed = false;
+        foreach (var item in toRemove)
+        {
+            removed |= collection.Remove(item);
+        }
+
+        return removed;
     }
 }

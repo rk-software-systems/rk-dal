@@ -53,4 +53,19 @@ public interface IStorage : IReadonlyStorage
     /// <param name="entity">Entity to be removed</param>
     /// <param name="cancellationToken">Operation cancellation token</param>
     Task<bool> RemoveAsync<T>(T entity, CancellationToken cancellationToken) where T : class;
+
+    /// <summary>
+    /// Remove entities from storage async based on query
+    /// </summary>
+    /// <typeparam name="T">Type of the entity to be removed</typeparam>
+    /// <param name="query">Query to select entities to be removed</param>
+    Task<bool> RemoveAsync<T>(IQueryable<T> query) where T : class;
+
+    /// <summary>
+    /// Remove entities from storage async based on query
+    /// </summary>
+    /// <typeparam name="T">Type of the entity to be removed</typeparam>
+    /// <param name="query">Query to select entities to be removed</param>
+    /// <param name="cancellationToken">Operation cancellation token</param>
+    Task<bool> RemoveAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class;
 }
