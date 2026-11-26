@@ -171,7 +171,8 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
              }
 
             var affected = await query.ExecuteDeleteAsync(cancellationToken);
-
+            DbContext.ChangeTracker.Clear();
+            
             return affected > 0;
         }
         finally
