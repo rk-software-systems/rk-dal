@@ -21,7 +21,7 @@ This package is part of the RK Software Systems ecosystem and provides a simple,
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.InMemory --version 10.0.2
+dotnet add package RKSoftware.DAL.InMemory --version 10.0.3
 ```
 
 Or via the NuGet Package Manager in Visual Studio.

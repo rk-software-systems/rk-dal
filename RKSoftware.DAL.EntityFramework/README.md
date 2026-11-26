@@ -22,7 +22,7 @@ This package is part of the RK Software Systems ecosystem and is designed to sim
 You can install the package via NuGet:
 
 ```
-dotnet add package RKSoftware.DAL.EntityFramework --version 10.0.2
+dotnet add package RKSoftware.DAL.EntityFramework --version 10.0.3
 ```
 
 Or via the NuGet Package Manager in Visual Studio.
@@ -84,6 +84,19 @@ public class Example {
 - After `BeginTransactionAsync`, these operations are only tracked and are not persisted until `CommitTransactionAsync` is called.
 - `CommitTransactionAsync` persists the tracked changes and ends the transaction. It does nothing if no transaction is active. The change tracker is always cleared afterwards, even if saving fails, so entities are detached after a commit.
 - `ResetTransactionAsync` discards all uncommitted changes and ends the transaction.
+
+### Bulk removal
+
+`RemoveByQueryAsync(IQueryable<T> query)` deletes every row the query matches using a single `DELETE` statement (EF Core `ExecuteDeleteAsync`), without loading entities:
+
+```csharp
+await storage.RemoveByQueryAsync(storage.Set<MyEntity>().Where(x => x.Name == "obsolete"));
+```
+
+- It is executed immediately and returns `true` if at least one row was deleted.
+- It throws `InvalidOperationException` when called inside an active transaction (after `BeginTransactionAsync`), because the delete cannot be deferred until commit.
+- It throws `InvalidOperationException` when the context has pending (unsaved) changes.
+- It requires a relational provider; the EF Core InMemory provider does not support `ExecuteDeleteAsync`.
 
 > **Upgrading from 10.0.1:** `BeginTransaction()` was replaced by `BeginTransactionAsync()`. `BeginTransactionAsync`, `CommitTransactionAsync` and `ResetTransactionAsync` all have `CancellationToken` overloads.
 

@@ -129,6 +129,59 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
     }
 
     /// <summary>
+    /// <see cref="IStorage.RemoveByQueryAsync{T}(IQueryable{T})"/>
+    /// </summary>
+    /// <remarks>
+    /// Executed immediately as a single DELETE statement using <c>ExecuteDeleteAsync</c>.
+    /// The query must originate from this storage (e.g. <see cref="EntityFrameworkReadonlyStorage.Set{T}"/>)
+    /// and requires a relational provider; the EF InMemory provider is not supported.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when a transaction is active.</exception>
+    public async Task<bool> RemoveByQueryAsync<T>(IQueryable<T> query) where T : class
+    {
+        return await RemoveByQueryAsync(query, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// <see cref="IStorage.RemoveByQueryAsync{T}(IQueryable{T}, CancellationToken)"/>
+    /// </summary>
+    /// <remarks>
+    /// Executed immediately as a single DELETE statement using <c>ExecuteDeleteAsync</c>.
+    /// The query must originate from this storage (e.g. <see cref="EntityFrameworkReadonlyStorage.Set{T}"/>)
+    /// and requires a relational provider; the EF InMemory provider is not supported.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when a transaction is active.</exception>
+    public async Task<bool> RemoveByQueryAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(query, nameof(query));
+
+        await _commitSemaphore.WaitAsync(cancellationToken);
+        try
+        {
+            if (_activeTransaction)
+            {
+                throw new InvalidOperationException(
+                    "Query-based removal executes immediately and cannot be used inside an active transaction.");
+            }
+
+            if (DbContext.ChangeTracker.HasChanges())
+             {
+                 throw new InvalidOperationException(
+                     "Query-based removal cannot be used while the context has pending changes as it may lead to inconsistent state.");
+             }
+
+            var affected = await query.ExecuteDeleteAsync(cancellationToken);
+            DbContext.ChangeTracker.Clear();
+            
+            return affected > 0;
+        }
+        finally
+        {
+            _commitSemaphore.Release();
+        }
+    }
+
+    /// <summary>
     /// <see cref="IStorage.SaveAsync{T}(T)"/>
     /// </summary>
     public async Task<T> SaveAsync<T>(T entity) where T : class
