@@ -129,7 +129,7 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
     }
 
     /// <summary>
-    /// <see cref="IStorage.RemoveAsync{T}(IQueryable{T})"/>
+    /// <see cref="IStorage.RemoveByQueryAsync{T}(IQueryable{T})"/>
     /// </summary>
     /// <remarks>
     /// Executed immediately as a single DELETE statement using <c>ExecuteDeleteAsync</c>.
@@ -137,13 +137,13 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
     /// and requires a relational provider; the EF InMemory provider is not supported.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when a transaction is active.</exception>
-    public async Task<bool> RemoveAsync<T>(IQueryable<T> query) where T : class
+    public async Task<bool> RemoveByQueryAsync<T>(IQueryable<T> query) where T : class
     {
-        return await RemoveAsync(query, CancellationToken.None);
+        return await RemoveByQueryAsync(query, CancellationToken.None);
     }
 
     /// <summary>
-    /// <see cref="IStorage.RemoveAsync{T}(IQueryable{T}, CancellationToken)"/>
+    /// <see cref="IStorage.RemoveByQueryAsync{T}(IQueryable{T}, CancellationToken)"/>
     /// </summary>
     /// <remarks>
     /// Executed immediately as a single DELETE statement using <c>ExecuteDeleteAsync</c>.
@@ -151,7 +151,7 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
     /// and requires a relational provider; the EF InMemory provider is not supported.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when a transaction is active.</exception>
-    public async Task<bool> RemoveAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class
+    public async Task<bool> RemoveByQueryAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class
     {
         ArgumentNullException.ThrowIfNull(query, nameof(query));
 
@@ -164,10 +164,13 @@ public class EntityFrameworkStorage(DbContext context) : EntityFrameworkReadonly
                     "Query-based removal executes immediately and cannot be used inside an active transaction.");
             }
 
-            var affected = await query.ExecuteDeleteAsync(cancellationToken);
+            if (DbContext.ChangeTracker.HasChanges())
+             {
+                 throw new InvalidOperationException(
+                     "Query-based removal cannot be used while the context has pending changes as it may lead to inconsistent state.");
+             }
 
-            // Tracked instances of deleted rows would otherwise be stale.
-            DbContext.ChangeTracker.Clear();
+            var affected = await query.ExecuteDeleteAsync(cancellationToken);
 
             return affected > 0;
         }

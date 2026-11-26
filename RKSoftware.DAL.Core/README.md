@@ -36,7 +36,7 @@ This library contains interfaces that need to be implemented by your DAL classes
 - `IStorage`:
   - This service is used as a READ / WRITE Storage abstraction
   - This service implements `IReadonlyStorage`
-  - `RemoveAsync(IQueryable<T> query)` (with a `CancellationToken` overload) removes all entities matched by the query and returns `true` if anything was removed.
+  - `RemoveByQueryAsync(IQueryable<T> query)` (with a `CancellationToken` overload) removes all entities matched by the query and returns `true` if anything was removed.
 - `ITransactionalStorage`:
   - This service abstracts storage that supports Transactions.
   - Inherits from `IStorage`

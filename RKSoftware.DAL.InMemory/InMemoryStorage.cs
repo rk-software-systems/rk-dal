@@ -43,17 +43,17 @@ public class InMemoryStorage(CollectionStorage collectionStorage) : InMemoryRead
     }
 
     /// <summary>
-    /// <see cref="IStorage.RemoveAsync{T}(IQueryable{T})"/>
+    /// <see cref="IStorage.RemoveByQueryAsync{T}(IQueryable{T})"/>
     /// </summary>
-    public Task<bool> RemoveAsync<T>(IQueryable<T> query) where T : class
+    public Task<bool> RemoveByQueryAsync<T>(IQueryable<T> query) where T : class
     {
         return Task.FromResult(RemoveRange(query));
     }
 
     /// <summary>
-    /// <see cref="IStorage.RemoveAsync{T}(IQueryable{T}, CancellationToken)"/>
+    /// <see cref="IStorage.RemoveByQueryAsync{T}(IQueryable{T}, CancellationToken)"/>
     /// </summary>
-    public Task<bool> RemoveAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class
+    public Task<bool> RemoveByQueryAsync<T>(IQueryable<T> query, CancellationToken cancellationToken) where T : class
     {
         cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(RemoveRange(query));

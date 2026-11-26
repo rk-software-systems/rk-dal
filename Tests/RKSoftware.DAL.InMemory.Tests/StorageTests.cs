@@ -109,7 +109,22 @@ public class StorageTests
     {
         using var storage = CreateSeededStorage(1, 2, 3);
 
-        var removed = await storage.RemoveAsync(storage.Set<TestEntity>().Where(x => x.TestLongProperty >= 2));
+        var removed = await storage.RemoveByQueryAsync(storage.Set<TestEntity>().Where(x => x.TestLongProperty >= 2));
+
+        Assert.IsTrue(removed);
+        var remaining = storage.Storage.GetCollection<TestEntity>();
+        Assert.AreEqual(1, remaining.Count);
+        Assert.AreEqual(1, remaining.First().TestLongProperty);
+    }
+
+    [TestMethod]
+    public async Task TestRemoveByQueryOrdered()
+    {
+        using var storage = CreateSeededStorage(1, 2, 3);
+
+        var removed = await storage.RemoveByQueryAsync(storage.Set<TestEntity>()
+            .Where(x => x.TestLongProperty >= 2)
+            .OrderBy(x => x.TestLongProperty));
 
         Assert.IsTrue(removed);
         var remaining = storage.Storage.GetCollection<TestEntity>();
@@ -122,7 +137,7 @@ public class StorageTests
     {
         using var storage = CreateSeededStorage(1, 2);
 
-        var removed = await storage.RemoveAsync(storage.Set<TestEntity>().Where(x => x.TestLongProperty > 10));
+        var removed = await storage.RemoveByQueryAsync(storage.Set<TestEntity>().Where(x => x.TestLongProperty > 10));
 
         Assert.IsFalse(removed);
         Assert.AreEqual(2, storage.Storage.GetCollection<TestEntity>().Count);
@@ -137,7 +152,7 @@ public class StorageTests
 
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await storage.RemoveAsync(storage.Set<TestEntity>(), cts.Token);
+            await storage.RemoveByQueryAsync(storage.Set<TestEntity>(), cts.Token);
         });
 
         Assert.AreEqual(2, storage.Storage.GetCollection<TestEntity>().Count);
@@ -150,7 +165,7 @@ public class StorageTests
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
-            await storage.RemoveAsync((IQueryable<TestEntity>)null!);
+            await storage.RemoveByQueryAsync((IQueryable<TestEntity>)null!);
         });
     }
 }

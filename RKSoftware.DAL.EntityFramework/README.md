@@ -87,15 +87,15 @@ public class Example {
 
 ### Bulk removal
 
-`RemoveAsync(IQueryable<T> query)` deletes every row the query matches using a single `DELETE` statement (EF Core `ExecuteDeleteAsync`), without loading entities:
+`RemoveByQueryAsync(IQueryable<T> query)` deletes every row the query matches using a single `DELETE` statement (EF Core `ExecuteDeleteAsync`), without loading entities:
 
 ```csharp
-await storage.RemoveAsync(storage.Set<MyEntity>().Where(x => x.Name == "obsolete"));
+await storage.RemoveByQueryAsync(storage.Set<MyEntity>().Where(x => x.Name == "obsolete"));
 ```
 
 - It is executed immediately and returns `true` if at least one row was deleted.
 - It throws `InvalidOperationException` when called inside an active transaction (after `BeginTransactionAsync`), because the delete cannot be deferred until commit.
-- The change tracker is cleared afterwards.
+- It throws `InvalidOperationException` when the context has pending (unsaved) changes.
 - It requires a relational provider; the EF Core InMemory provider does not support `ExecuteDeleteAsync`.
 
 > **Upgrading from 10.0.1:** `BeginTransaction()` was replaced by `BeginTransactionAsync()`. `BeginTransactionAsync`, `CommitTransactionAsync` and `ResetTransactionAsync` all have `CancellationToken` overloads.
